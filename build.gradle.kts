@@ -114,7 +114,8 @@ repositories {
     maven("http://chickenbones.net/maven/") { this.name = "CodeChicken" }
     maven("http://www.ryanliptak.com/maven/") { this.name = "appleCore" }
     maven("http://maven.tterrag.com") { this.name = "tterrag Repo" }
-    maven("https://jitpack.io")
+    maven ("http://dvs1.progwml6.com/files/maven") { this.name = "DVS1 Maven FS" }
+    maven("https://jitpack.io") { this.name = "JitPack" }
 }
 
 dependencies {
@@ -131,10 +132,11 @@ dependencies {
     compile("com.github.GTNewHorizons:GT5-Unofficial:experimental-SNAPSHOT:dev") {
         this.isChanging = true
     }
-    compile ("com.github.GTNewHorizons:StructureLib:1.0.6:deobf")
+    compile("com.github.GTNewHorizons:StructureLib:1.0.6:deobf")
     compile("com.github.GTNewHorizons:TinkersConstruct:master-SNAPSHOT:deobf") {
         this.isChanging = true
     }
+    compile("mantle:Mantle:1.7.10-0.3.2.jenkins187:deobf")
     compileOnly("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-1.7.10-SNAPSHOT:dev") {
         this.isChanging = true
     }
@@ -160,6 +162,7 @@ dependencies {
 
     //CoreLibs for compile-age
     //compileOnly("com.github.GTNH2:Yamcl:master-SNAPSHOT") //broken jitpack.io dep
+    runtime("eu.usrv:YAMCore:1.7.10-0.5.79:deobf")
     compileOnly("applecore:AppleCore:$applecoreVersion:api")
     compileOnly("com.enderio.core:EnderCore:$enderCoreVersion:dev")
     compileOnly("com.enderio:EnderIO:$enderioVersion:dev")
@@ -168,6 +171,7 @@ dependencies {
     compile("codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev")
     compile("codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev")
     compile("codechicken:NotEnoughItems:1.7.10-1.0.5.120:dev")
+
 }
 
 val Project.minecraft: UserExtension
