@@ -394,10 +394,6 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         return this.mID;
     }
 
-    public short getMixCircuit() {
-        return this.getGenerationFeatures().mixCircuit;
-    }
-
     public Werkstoff.GenerationFeatures getGenerationFeatures() {
         return this.generationFeatures;
     }
@@ -621,7 +617,6 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
          * Auto add MetalWorking(crafting components) Recipe 10000
          */
         public byte extraRecipes;
-        public short mixCircuit = -1;
 
         public Werkstoff.GenerationFeatures setBlacklist(OrePrefixes p) {
             this.blacklist |= getPrefixDataRaw(p);
@@ -680,13 +675,6 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
 
         public Werkstoff.GenerationFeatures addMixerRecipes() {
             this.extraRecipes = (byte) (this.extraRecipes | 10);
-            return this;
-        }
-
-        public Werkstoff.GenerationFeatures addMixerRecipes(short aCircuit) {
-            this.extraRecipes = (byte) (this.extraRecipes | 10);
-            if (aCircuit >= 1 && aCircuit <=24)
-                this.mixCircuit = aCircuit;
             return this;
         }
 
