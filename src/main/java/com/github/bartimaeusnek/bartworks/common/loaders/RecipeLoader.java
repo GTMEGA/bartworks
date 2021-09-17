@@ -27,7 +27,6 @@ import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_LESU;
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_ManualTrafo;
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_THTR;
-import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_HTGR;
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_Windmill;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
@@ -747,7 +746,7 @@ public class RecipeLoader {
             );
             GT_TileEntity_THTR.THTRMaterials.registerTHR_Recipes();
             GT_ModHandler.addCraftingRecipe(
-                    ItemRegistry.THTR,
+                    ItemRegistry.thtr,
                     RecipeLoader.BITSD,
                     new Object[]{
                             "BZB",
@@ -756,19 +755,6 @@ public class RecipeLoader {
                             'B', new ItemStack(GregTech_API.sBlockCasings3, 1, 12),
                             'R', GT_ModHandler.getModItem("IC2", "blockGenerator", 1, 5),
                             'Z', "circuitUltimate"
-                    }
-            );
-            GT_TileEntity_HTGR.HTGRMaterials.registerTHR_Recipes();
-            GT_ModHandler.addCraftingRecipe(
-                    ItemRegistry.HTGR,
-                    RecipeLoader.BITSD,
-                    new Object[]{
-                            "BZB",
-                            "BRB",
-                            "BZB",
-                            'B', new ItemStack(GregTech_API.sBlockCasings8, 1, 5),
-                            'R', GT_ModHandler.getModItem("IC2", "blockGenerator", 1, 5),
-                            'Z', "circuitSuperconductor"
                     }
             );
 
