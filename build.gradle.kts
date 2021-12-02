@@ -25,11 +25,11 @@ import net.minecraftforge.gradle.user.UserExtension
 buildscript {
     repositories {
         mavenCentral()
-        maven("https://gregtech.overminddl1.com/")
+        maven("https://gregtech.overminddl1.com")
         maven("https://jitpack.io")
     }
     dependencies {
-        classpath("com.github.GTNH2:ForgeGradle:FG_1.2-SNAPSHOT")
+        classpath("com.github.GTNewHorizons:ForgeGradle:1.2.4")
     }
 }
 
@@ -91,7 +91,7 @@ configure<UserExtension> {
 repositories {
     mavenLocal()
     maven("https://gregtech.overminddl1.com/") { this.name = "GT6Maven" }
-    maven("http://maven.ic2.player.to/") { this.name = "ic2" }
+    maven("http://downloads.gtnewhorizons.com/Mods_for_Jenkins/") { this.name = "ic2" }
     maven("http://jenkins.usrv.eu:8081/nexus/content/repositories/releases/") { this.name = "UsrvDE/GTNH" }
     ivy {
         this.name = "gtnh_download_source_stupid_underscore_typo"
@@ -129,11 +129,11 @@ dependencies {
     //hard deps
     compile("net.industrial-craft:industrialcraft-2:$ic2Version:dev")
     //jitpack
-    compile("com.github.GTNewHorizons:GT5-Unofficial:experimental-SNAPSHOT:dev") {
+    compile("com.github.GTNewHorizons:GT5-Unofficial:master-SNAPSHOT:dev") {
         this.isChanging = true
     }
-    compile("com.github.GTNewHorizons:StructureLib:1.0.6:deobf")
-    compile("com.github.GTNewHorizons:TinkersConstruct:master-SNAPSHOT:deobf") {
+    compile ("com.github.GTNewHorizons:StructureLib:1.0.6:deobf")
+    compile("com.github.GTNewHorizons:TinkersConstruct:master-SNAPSHOT:dev") {
         this.isChanging = true
     }
     compile("mantle:Mantle:1.7.10-0.3.2.jenkins187:deobf")
@@ -168,10 +168,9 @@ dependencies {
     compileOnly("com.enderio:EnderIO:$enderioVersion:dev")
 
     //NEI
-    compile("codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev")
-    compile("codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev")
-    compile("codechicken:NotEnoughItems:1.7.10-1.0.5.120:dev")
-
+    compile("com.github.GTNewHorizons:CodeChickenLib:master-SNAPSHOT:dev")
+    compile("com.github.GTNewHorizons:CodeChickenCore:master-SNAPSHOT:dev")
+    compile("com.github.GTNewHorizons:NotEnoughItems:master-SNAPSHOT:dev")
 }
 
 val Project.minecraft: UserExtension

@@ -106,6 +106,7 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         this.stats.setGas(materials.mHasGas);
         this.stats.setRadioactive(materials.isRadioactive());
         this.stats.setBlastFurnace(materials.mBlastFurnaceRequired);
+        this.stats.setMeltingVoltage(120);
         if (type == Types.COMPOUND){
             this.stats.setElektrolysis(true);
             this.generationFeatures.addChemicalRecipes();
@@ -211,18 +212,25 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         }
         if (this.stats.mass == 0) {
             long tmpmass = 0;
+            int count = 0;
             for (Pair<ISubTagContainer, Integer> p : contents) {
                 if (p.getKey() instanceof Materials) {
                     tmpmass += ((Materials) p.getKey()).getMass() * p.getValue();
+                    count += p.getValue();
                 } else if (p.getKey() instanceof Werkstoff) {
                     tmpmass += ((Werkstoff) p.getKey()).getStats().mass * p.getValue();
+                    count += p.getValue();
                 }
             }
-            this.stats = stats.setMass(tmpmass);
+            if(count > 0)
+                this.stats = stats.setMass(tmpmass/count);
         }
 
         if (this.stats.meltingPoint == 0)
             this.stats.meltingPoint = 1123;
+
+        if (this.stats.meltingVoltage == 0)
+            this.stats.meltingVoltage = 120;
 
         this.texSet = texSet;
 
@@ -384,6 +392,10 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
 
     public short getmID() {
         return this.mID;
+    }
+
+    public short getMixCircuit() {
+        return this.getGenerationFeatures().mixCircuit;
     }
 
     public Werkstoff.GenerationFeatures getGenerationFeatures() {
@@ -609,6 +621,7 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
          * Auto add MetalWorking(crafting components) Recipe 10000
          */
         public byte extraRecipes;
+        public short mixCircuit = -1;
 
         public Werkstoff.GenerationFeatures setBlacklist(OrePrefixes p) {
             this.blacklist |= getPrefixDataRaw(p);
@@ -667,6 +680,13 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
 
         public Werkstoff.GenerationFeatures addMixerRecipes() {
             this.extraRecipes = (byte) (this.extraRecipes | 10);
+            return this;
+        }
+
+        public Werkstoff.GenerationFeatures addMixerRecipes(short aCircuit) {
+            this.extraRecipes = (byte) (this.extraRecipes | 10);
+            if (aCircuit >= 1 && aCircuit <=24)
+                this.mixCircuit = aCircuit;
             return this;
         }
 
@@ -829,6 +849,7 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         private int durOverride;
         private float speedOverride;
         private int meltingPoint;
+        private int meltingVoltage;
         private long protons;
         private long neutrons;
         private long electrons;
@@ -951,6 +972,15 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
             else
                 this.quality = (byte) (this.quality & 0b1110111);
             return this;
+        }
+
+        public Werkstoff.Stats setMeltingVoltage(int meltingVoltage) {
+            this.meltingVoltage = meltingVoltage;
+            return this;
+        }
+
+        public int getMeltingVoltage() {
+            return meltingVoltage;
         }
 
         public boolean isElektrolysis() {

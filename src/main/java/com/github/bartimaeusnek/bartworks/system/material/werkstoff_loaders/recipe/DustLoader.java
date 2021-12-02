@@ -148,6 +148,9 @@ public class DustLoader implements IWerkstoffRunnable {
                 if (werkstoff.getGenerationFeatures().hasMixerRecipes()) {
                     if (cells > 0)
                         stOutputs.add(Materials.Empty.getCells(cells));
+                    short circuitID = werkstoff.getMixCircuit();
+                    ItemStack circuit = circuitID == -1 ? null : GT_Utility.getIntegratedCircuit(circuitID);
+                    if (circuit != null) stOutputs.add(circuit);
                     GT_Recipe.GT_Recipe_Map.sMixerRecipes.add(new BWRecipes.DynamicGTRecipe(true, stOutputs.toArray(new ItemStack[0]), new ItemStack[]{input}, null, null, new FluidStack[]{flOutputs.size() > 0 ? flOutputs.get(0) : null}, null, (int) Math.max(1L, Math.abs(werkstoff.getStats().getMass() / werkstoff.getContents().getValue().size())), Math.min(4, werkstoff.getContents().getValue().size()) * 5, 0));
                 }
             }
@@ -177,11 +180,11 @@ public class DustLoader implements IWerkstoffRunnable {
                 GT_ModHandler.addSmeltingRecipe(werkstoff.get(dustTiny), werkstoff.get(nugget));
             } else if (werkstoff.hasItemType(ingot) && werkstoff.getStats().isBlastFurnace() && werkstoff.getStats().getMeltingPoint() != 0) {
                 if (werkstoff.contains(WerkstoffLoader.ANAEROBE_SMELTING)) {
-                    GT_Values.RA.addBlastRecipe(werkstoff.get(dust), GT_Utility.getIntegratedCircuit(11), Materials.Nitrogen.getGas(1000), null, werkstoff.getStats().getMeltingPoint() < 1750 ? werkstoff.get(ingot) : werkstoff.get(ingotHot), null, (int) Math.max(werkstoff.getStats().getMass() / 40L, 1L) * werkstoff.getStats().getMeltingPoint(), 120, werkstoff.getStats().getMeltingPoint());
+                    GT_Values.RA.addBlastRecipe(werkstoff.get(dust), GT_Utility.getIntegratedCircuit(11), Materials.Nitrogen.getGas(1000), null, werkstoff.getStats().getMeltingPoint() < 1750 ? werkstoff.get(ingot) : werkstoff.get(ingotHot), null, (int) Math.max(werkstoff.getStats().getMass() / 40L, 1L) * werkstoff.getStats().getMeltingPoint(), werkstoff.getStats().getMeltingVoltage(), werkstoff.getStats().getMeltingPoint());
                 } else if (werkstoff.contains(WerkstoffLoader.NOBLE_GAS_SMELTING)) {
-                    GT_Values.RA.addBlastRecipe(werkstoff.get(dust), GT_Utility.getIntegratedCircuit(11), Materials.Argon.getGas(1000), null, werkstoff.getStats().getMeltingPoint() < 1750 ? werkstoff.get(ingot) : werkstoff.get(ingotHot), null, (int) Math.max(werkstoff.getStats().getMass() / 40L, 1L) * werkstoff.getStats().getMeltingPoint(), 120, werkstoff.getStats().getMeltingPoint());
+                    GT_Values.RA.addBlastRecipe(werkstoff.get(dust), GT_Utility.getIntegratedCircuit(11), Materials.Argon.getGas(1000), null, werkstoff.getStats().getMeltingPoint() < 1750 ? werkstoff.get(ingot) : werkstoff.get(ingotHot), null, (int) Math.max(werkstoff.getStats().getMass() / 40L, 1L) * werkstoff.getStats().getMeltingPoint(), werkstoff.getStats().getMeltingVoltage(), werkstoff.getStats().getMeltingPoint());
                 } else {
-                    GT_Values.RA.addBlastRecipe(werkstoff.get(dust), GT_Utility.getIntegratedCircuit(1), null, null, werkstoff.getStats().getMeltingPoint() < 1750 ? werkstoff.get(ingot) : werkstoff.get(ingotHot), null, (int) Math.max(werkstoff.getStats().getMass() / 40L, 1L) * werkstoff.getStats().getMeltingPoint(), 120, werkstoff.getStats().getMeltingPoint());
+                    GT_Values.RA.addBlastRecipe(werkstoff.get(dust), GT_Utility.getIntegratedCircuit(1), null, null, werkstoff.getStats().getMeltingPoint() < 1750 ? werkstoff.get(ingot) : werkstoff.get(ingotHot), null, (int) Math.max(werkstoff.getStats().getMass() / 40L, 1L) * werkstoff.getStats().getMeltingPoint(), werkstoff.getStats().getMeltingVoltage(), werkstoff.getStats().getMeltingPoint());
                     if (werkstoff.getStats().getMeltingPoint() <= 1000) {
                         GT_Values.RA.addPrimitiveBlastRecipe(werkstoff.get(dust), null, 9, werkstoff.get(ingot), null, (int) Math.max(werkstoff.getStats().getMass() / 40L, 1L) * werkstoff.getStats().getMeltingPoint());
                         GT_ModHandler.addRCBlastFurnaceRecipe(werkstoff.get(ingot), werkstoff.get(dust), werkstoff.getStats().getMeltingPoint());
