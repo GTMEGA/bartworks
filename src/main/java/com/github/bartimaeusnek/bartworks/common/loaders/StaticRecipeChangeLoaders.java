@@ -38,6 +38,7 @@ import gregtech.api.objects.GT_ItemStack;
 import gregtech.api.util.GT_ModHandler;
 import gregtech.api.util.GT_OreDictUnificator;
 import gregtech.api.util.GT_Recipe;
+import gregtech.api.util.GT_Recipe.GT_Recipe_Map;
 import gregtech.api.util.GT_Utility;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -135,49 +136,48 @@ public class StaticRecipeChangeLoaders {
                     for (OrePrefixes prefixes : OrePrefixes.values()) {
                         if (!werkstoff.hasItemType(prefixes))
                             continue;
-                        if (OreDictionary.getOres(prefixes + s).size() <= 1)
+                        String fullOreName = prefixes + s;
+                        List<ItemStack> ores = OreDictionary.getOres(fullOreName, false);
+                        if (ores.size() <= 1) // empty or one entry, i.e. no unification needed
                             continue;
-                        for (int j = 0; j < OreDictionary.getOres(prefixes + s).size(); j++) {
-                            ItemStack toReplace = OreDictionary.getOres(prefixes + s).get(j);
+                        for (ItemStack toReplace : ores) {
                             ItemStack replacement = werkstoff.get(prefixes);
                             if (toReplace == null || GT_Utility.areStacksEqual(toReplace, replacement) || replacement == null || replacement.getItem() == null)
                                 continue;
                             for (GT_Recipe.GT_Recipe_Map map : GT_Recipe.GT_Recipe_Map.sMappings) {
-                                HashSet<GT_Recipe> toRem = new HashSet<>();
-                                for (GT_Recipe recipe : map.mRecipeList) {
-                                    boolean removal = map.equals(GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes) || map.equals(GT_Recipe.GT_Recipe_Map.sFluidSolidficationRecipes);
+                                nextRecipe:
+                                for (Iterator<GT_Recipe> iterator = map.mRecipeList.iterator(); iterator.hasNext(); ) {
+                                    GT_Recipe recipe = iterator.next();
+                                    boolean removal = map.equals(GT_Recipe_Map.sFluidExtractionRecipes) || map.equals(GT_Recipe_Map.sFluidSolidficationRecipes);
                                     for (int i = 0; i < recipe.mInputs.length; i++) {
                                         if (!GT_Utility.areStacksEqual(recipe.mInputs[i], toReplace))
                                             continue;
-                                        if (removal)
-                                            toRem.add(recipe);
-                                        else {
-                                            int amount = recipe.mInputs[i].stackSize;
-                                            recipe.mInputs[i] = BW_Util.setStackSize(replacement, amount);
+                                        if (removal) {
+                                            iterator.remove();
+                                            continue nextRecipe;
                                         }
+                                        recipe.mInputs[i] = GT_Utility.copyAmount(recipe.mInputs[i].stackSize, replacement);
                                     }
                                     for (int i = 0; i < recipe.mOutputs.length; i++) {
                                         if (!GT_Utility.areStacksEqual(recipe.mOutputs[i], toReplace))
                                             continue;
-                                        if (removal)
-                                            toRem.add(recipe);
-                                        else {
-                                            int amount = recipe.mOutputs[i].stackSize;
-                                            recipe.mOutputs[i] = BW_Util.setStackSize(replacement, amount);
+                                        if (removal) {
+                                            iterator.remove();
+                                            continue nextRecipe;
                                         }
+                                        recipe.mOutputs[i] = GT_Utility.copyAmount(recipe.mOutputs[i].stackSize, replacement);
                                     }
                                     if (recipe.mSpecialItems instanceof ItemStack) {
-                                        if (!GT_Utility.areStacksEqual((ItemStack) recipe.mSpecialItems, toReplace))
+                                        ItemStack specialItemStack = (ItemStack) recipe.mSpecialItems;
+                                        if (!GT_Utility.areStacksEqual(specialItemStack, toReplace))
                                             continue;
-                                        if (removal)
-                                            toRem.add(recipe);
-                                        else {
-                                            int amount = ((ItemStack) recipe.mSpecialItems).stackSize;
-                                            recipe.mSpecialItems = BW_Util.setStackSize(replacement, amount);
+                                        if (removal) {
+                                            iterator.remove();
+                                            continue nextRecipe;
                                         }
+                                        recipe.mSpecialItems = GT_Utility.copyAmount((specialItemStack).stackSize, replacement);
                                     }
                                 }
-                                map.mRecipeList.removeAll(toRem);
                             }
                         }
                     }
