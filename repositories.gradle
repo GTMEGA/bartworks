@@ -18,6 +18,10 @@ repositories {
         }
     }
     maven {
+        name = "UsrvDE/GTNH"
+        url = "http://jenkins.usrv.eu:8081/nexus/content/repositories/releases/"
+    }
+    maven {
         url "https://cursemaven.com"
     }
     maven {
