@@ -40,4 +40,9 @@ public class StreamUtils {
     public static boolean filterVisualMaps(GT_Recipe.GT_Recipe_Map gt_recipe_map) {
         return filterVisualMaps().test(gt_recipe_map);
     }
+
+    public static boolean filterVisualMapsNoInstantiate(GT_Recipe.GT_Recipe_Map gt_recipe_map) {
+        Optional<GT_Recipe> op = gt_recipe_map.mRecipeList.stream().findAny();
+        return op.isPresent() && !op.get().mFakeRecipe;
+    }
 }

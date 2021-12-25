@@ -51,6 +51,9 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_ElectricImplosionCompressor.eicMap;
@@ -68,16 +71,30 @@ public class StaticRecipeChangeLoaders {
     }
 
     public static void fixEnergyRequirements() {
-        GT_Recipe.GT_Recipe_Map.sMappings.stream()
-                .filter(StreamUtils::filterVisualMaps)
-                .forEach(gt_recipe_map ->
-                        gt_recipe_map.mRecipeList.parallelStream().forEach(gt_recipe -> {
+        int threads = Math.max(Runtime.getRuntime().availableProcessors() / 2, 1);
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(threads, threads, 1, TimeUnit.MINUTES, new LinkedBlockingDeque<>());
+        for (GT_Recipe_Map gt_recipe_map: GT_Recipe_Map.sMappings) {
+            executor.execute(() -> {
+                if (StreamUtils.filterVisualMapsNoInstantiate(gt_recipe_map)) {
+                    for (GT_Recipe gt_recipe: gt_recipe_map.mRecipeList) {
+                        executor.execute(() -> {
                             for (int i = 0; i < (VN.length - 1); i++) {
                                 if (gt_recipe.mEUt > BW_Util.getMachineVoltageFromTier(i) && gt_recipe.mEUt <= BW_Util.getTierVoltage(i)) {
                                     gt_recipe.mEUt = BW_Util.getMachineVoltageFromTier(i);
                                 }
                             }
-                        }));
+                        });
+                    }
+                }
+            });
+        }
+        executor.shutdown();
+        while (true) {
+            try {
+                if (executor.awaitTermination(1, TimeUnit.MINUTES)) break;
+            } catch (InterruptedException ignored){}
+            DebugLog.log("fixEnergyRequirements took longer than 1 minute!");
+        }
     }
 
     private static void replaceWrongFluidOutput(Werkstoff werkstoff, GT_Recipe recipe, FluidStack wrongNamedFluid) {
