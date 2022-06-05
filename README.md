@@ -5,3 +5,5 @@ https://minecraft.curseforge.com/projects/bartworks/
 
 
 Please add -Dfml.coreMods.load=com.github.bartimaeusnek.ASM.BWCorePlugin to your JVM args when you run this in a dev enviroment!
+
+PS: This mod is a piece of fucking shit
