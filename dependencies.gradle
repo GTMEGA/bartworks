@@ -1,7 +1,11 @@
 // Add your dependencies here
 
 dependencies {
-    compile("com.github.GTNewHorizons:GalacticGregGT5:master-SNAPSHOT:dev")
+    compile("com.github.GTMEGA:GT5-Unofficial:master-SNAPSHOT:dev")
+
+    compile("com.github.GTNewHorizons:GalacticGregGT5:master-SNAPSHOT:dev") {
+        exclude module: "GT5-Unofficial"
+    }
 
     compile files("dependencies/TecTech-1.7.10-4.10.4-local-b6491dd.jar")
 
