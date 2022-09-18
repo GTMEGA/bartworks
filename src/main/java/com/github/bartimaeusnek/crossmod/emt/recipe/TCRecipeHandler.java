@@ -22,8 +22,6 @@
 
 package com.github.bartimaeusnek.crossmod.emt.recipe;
 
-import com.github.bartimaeusnek.bartworks.util.BWRecipes;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.crossmod.thaumcraft.util.ThaumcraftHandler;
 import com.google.common.collect.ArrayListMultimap;
 import gregtech.api.GregTech_API;
@@ -45,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import static com.github.bartimaeusnek.bartworks.util.BWBasicRecipes.DynamicGTRecipe;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.areStacksEqualOrNull;
 import static com.github.bartimaeusnek.crossmod.thaumcraft.util.ThaumcraftHandler.AspectAdder;
 
 @SuppressWarnings("ALL")
@@ -159,7 +159,7 @@ public class TCRecipeHandler {
         ItemStack fake = new ItemStack(Items.feather);
         fake.setTagCompound(toWrite);
         fake.setStackDisplayName(key);
-        GT_Recipe recipe = new BWRecipes.DynamicGTRecipe(
+        GT_Recipe recipe = new DynamicGTRecipe(
                 false,
                 new ItemStack[]{cat, GT_Utility.getIntegratedCircuit(config)},
                 new ItemStack[]{out},
@@ -253,7 +253,7 @@ public class TCRecipeHandler {
                         tRecipes = mRecipeItemMap.get(new GT_ItemStack(GT_Utility.copyMetaData(GT_Values.W, tStack)));
                         if (tRecipes != null)
                             for (GT_Recipe tRecipe : tRecipes)
-                                if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && BW_Util.areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot)) {
+                                if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot)) {
                                     NBTTagCompound toCheckNBT = aSpecialSlot.getTagCompound();
                                     NBTTagCompound givenNBT = ((ItemStack)aRecipe.mSpecialItems).getTagCompound();
                                     Object aAspectListToCheck = null;

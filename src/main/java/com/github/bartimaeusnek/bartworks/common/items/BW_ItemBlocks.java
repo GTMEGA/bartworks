@@ -27,7 +27,6 @@ import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.common.blocks.BW_GlasBlocks;
 import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
 import com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GT_Values;
@@ -43,6 +42,9 @@ import net.minecraft.util.StatCollector;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getTierFromGlasMeta;
+
+//TODO: divorce, extend correct class
 public class BW_ItemBlocks extends ItemBlock {
 
     private final String mNoMobsToolTip = GT_LanguageManager.addStringLocalization("gt.nomobspawnsonthisblock", "Mobs cannot Spawn on this Block");
@@ -70,7 +72,7 @@ public class BW_ItemBlocks extends ItemBlock {
     @SuppressWarnings("unchecked")
     public void addInformation(ItemStack aStack, EntityPlayer aPlayer, List aList, boolean aF3_H) {
         if (this.field_150939_a instanceof BW_GlasBlocks)
-            aList.add(StatCollector.translateToLocal("tooltip.glas.0.name") + " " + BW_ColorUtil.getColorForTier(BW_Util.getTierFromGlasMeta(aStack.getItemDamage())) + GT_Values.VN[BW_Util.getTierFromGlasMeta(aStack.getItemDamage())]);
+            aList.add(StatCollector.translateToLocal("tooltip.glas.0.name") + " " + BW_ColorUtil.getColorForTier(getTierFromGlasMeta(aStack.getItemDamage())) + GT_Values.VN[getTierFromGlasMeta(aStack.getItemDamage())]);
         if (this.field_150939_a instanceof ITileAddsInformation) {
             aList.addAll(Arrays.asList(((ITileAddsInformation) this.field_150939_a).getInfoData()));
         }

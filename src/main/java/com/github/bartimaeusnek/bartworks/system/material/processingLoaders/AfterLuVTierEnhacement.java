@@ -23,12 +23,12 @@
 package com.github.bartimaeusnek.bartworks.system.material.processingLoaders;
 
 import com.github.bartimaeusnek.bartworks.system.material.BW_NonMeta_MaterialItems;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.util.GT_OreDictUnificator;
 
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.*;
 import static gregtech.api.enums.OrePrefixes.dust;
 import static gregtech.api.enums.OrePrefixes.dustSmall;
 
@@ -38,37 +38,37 @@ public class AfterLuVTierEnhacement {
 
     public static void run() {
 
-        GT_Values.RA.addCentrifugeRecipe(BW_NonMeta_MaterialItems.Depleted_Tiberium_1.get(1), null,null,WerkstoffLoader.Xenon.getFluidOrGas(1),
-                WerkstoffLoader.Zirconium.get(dust),
-                WerkstoffLoader.Zirconium.get(dust),
-                WerkstoffLoader.Tiberium.get(dustSmall,2),
-                WerkstoffLoader.Zirconium.get(dust,2),
+        GT_Values.RA.addCentrifugeRecipe(BW_NonMeta_MaterialItems.Depleted_Tiberium_1.get(1), null,null,Xenon.getFluidOrGas(1),
+                Zirconium.get(dust),
+                Zirconium.get(dust),
+                Tiberium.get(dustSmall,2),
+                Zirconium.get(dust,2),
                 GT_OreDictUnificator.get(dust, Materials.TungstenSteel, 8L),
                 GT_OreDictUnificator.get(dust, Materials.Platinum, 1L),
                 new int[]{10_000,5_000,5_000,2_500,10_000,10_000},250,2000);
 
-        GT_Values.RA.addCentrifugeRecipe(BW_NonMeta_MaterialItems.Depleted_Tiberium_2.get(1), null,null,WerkstoffLoader.Xenon.getFluidOrGas(2),
-                WerkstoffLoader.Zirconium.get(dust,2),
-                WerkstoffLoader.Zirconium.get(dust,2),
-                WerkstoffLoader.Tiberium.get(dust),
-                WerkstoffLoader.Zirconium.get(dust,4),
+        GT_Values.RA.addCentrifugeRecipe(BW_NonMeta_MaterialItems.Depleted_Tiberium_2.get(1), null,null,Xenon.getFluidOrGas(2),
+                Zirconium.get(dust,2),
+                Zirconium.get(dust,2),
+                Tiberium.get(dust),
+                Zirconium.get(dust,4),
                 GT_OreDictUnificator.get(dust, Materials.TungstenSteel, 18L),
                 GT_OreDictUnificator.get(dust, Materials.Platinum, 2L),
                 new int[]{10_000,5_000,5_000,2_500,10_000,10_000},500,2000);
 
-        GT_Values.RA.addCentrifugeRecipe(BW_NonMeta_MaterialItems.Depleted_Tiberium_4.get(1), null,null,WerkstoffLoader.Xenon.getFluidOrGas(4),
-                WerkstoffLoader.Zirconium.get(dust,4),
-                WerkstoffLoader.Zirconium.get(dust,4),
-                WerkstoffLoader.Tiberium.get(dust,2),
-                WerkstoffLoader.Zirconium.get(dust,8),
+        GT_Values.RA.addCentrifugeRecipe(BW_NonMeta_MaterialItems.Depleted_Tiberium_4.get(1), null,null,Xenon.getFluidOrGas(4),
+                Zirconium.get(dust,4),
+                Zirconium.get(dust,4),
+                Tiberium.get(dust,2),
+                Zirconium.get(dust,8),
                 GT_OreDictUnificator.get(dust, Materials.TungstenSteel, 38L),
                 GT_OreDictUnificator.get(dust, Materials.Platinum, 4L),
                 new int[]{10_000,5_000,5_000,2_500,10_000,10_000},1000,2000);
 
         GT_Values.RA.addCentrifugeRecipe(BW_NonMeta_MaterialItems.Depleted_TheCoreCell.get(1), null,null,null,
                 ItemList.Depleted_Naquadah_4.get(8),
-                WerkstoffLoader.Zirconium.get(dust,64),
-                WerkstoffLoader.Zirconium.get(dust,64),
+                Zirconium.get(dust,64),
+                Zirconium.get(dust,64),
                 null,
                 null,
                 null,

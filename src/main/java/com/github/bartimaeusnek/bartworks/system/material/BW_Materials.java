@@ -1,196 +1,22 @@
-/*
- * Copyright (c) 2018-2020 bartimaeusnek
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 package com.github.bartimaeusnek.bartworks.system.material;
 
-import com.github.bartimaeusnek.bartworks.API.LoaderReference;
-import com.github.bartimaeusnek.bartworks.API.SideReference;
-import com.github.bartimaeusnek.bartworks.API.WerkstoffAdderRegistry;
-import com.github.bartimaeusnek.bartworks.MainMod;
-import com.github.bartimaeusnek.bartworks.client.renderer.BW_Renderer_Block_Ores;
-import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
-import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.BW_CircuitsLoader;
-import com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement.GTMetaItemEnhancer;
-import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.AdditionalRecipes;
-import com.github.bartimaeusnek.bartworks.system.material.werkstoff_loaders.IWerkstoffRunnable;
-import com.github.bartimaeusnek.bartworks.system.material.werkstoff_loaders.recipe.*;
-import com.github.bartimaeusnek.bartworks.system.material.werkstoff_loaders.registration.AssociationLoader;
-import com.github.bartimaeusnek.bartworks.system.material.werkstoff_loaders.registration.BridgeMaterialsLoader;
-import com.github.bartimaeusnek.bartworks.system.material.werkstoff_loaders.registration.CasingRegistrator;
-import com.github.bartimaeusnek.bartworks.system.oredict.OreDictHandler;
-import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
-import com.github.bartimaeusnek.bartworks.util.EnumUtils;
 import com.github.bartimaeusnek.bartworks.util.Pair;
-import com.github.bartimaeusnek.bartworks.util.log.DebugLog;
-import com.github.bartimaeusnek.crossmod.cls.CLSCompat;
-import com.google.common.collect.HashBiMap;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.ProgressManager;
-import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.enums.*;
+import gregtech.api.enums.Element;
+import gregtech.api.enums.Materials;
+import gregtech.api.enums.SubTag;
+import gregtech.api.enums.TextureSet;
 import gregtech.api.interfaces.ISubTagContainer;
-import gregtech.api.objects.GT_Fluid;
-import gregtech.api.util.*;
-import gregtech.common.items.GT_MetaGenerated_Tool_01;
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputOreDict;
-import ic2.api.recipe.RecipeOutput;
-import ic2.api.recipe.Recipes;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.oredict.OreDictionary;
-import org.apache.logging.log4j.Level;
+import gregtech.api.util.GT_OreDictUnificator;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
 
-import static com.github.bartimaeusnek.bartworks.util.BW_Util.subscriptNumbers;
-import static com.github.bartimaeusnek.bartworks.util.BW_Util.superscriptNumbers;
+import static com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader.*;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.subscriptNumbers;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.superscriptNumbers;
 import static gregtech.api.enums.OrePrefixes.*;
 
-@SuppressWarnings({"unchecked", "deprecation"})
-public class WerkstoffLoader {
-    private WerkstoffLoader() {
-    }
-
-    public static final SubTag NOBLE_GAS = SubTag.getNewSubTag("NobleGas");
-    public static final SubTag ANAEROBE_GAS = SubTag.getNewSubTag("AnaerobeGas");
-    public static final SubTag ANAEROBE_SMELTING = SubTag.getNewSubTag("AnaerobeSmelting");
-    public static final SubTag NOBLE_GAS_SMELTING = SubTag.getNewSubTag("NobleGasSmelting");
-    public static final SubTag NO_BLAST = SubTag.getNewSubTag("NoBlast");
-    public static OrePrefixes cellMolten;
-    public static OrePrefixes capsuleMolten;
-    public static OrePrefixes blockCasing;
-    public static OrePrefixes blockCasingAdvanced;
-    public static ItemList rotorMold;
-    public static ItemList rotorShape;
-    public static ItemList smallGearShape;
-    public static ItemList ringMold;
-    public static ItemList boltMold;
-    public static boolean gtnhGT = false;
-
-    public static void setUp() {
-        //GTNH detection hack
-        try {
-            Field f = GT_MetaGenerated_Tool_01.class.getField("SOLDERING_IRON_MV");
-            gtnhGT = true;
-        } catch (Exception ignored) {
-            gtnhGT = false;
-        }
-        //GTNH detection hack #2
-        //GTNH hack for molten cells
-        for (OrePrefixes prefix : values()) {
-            if (prefix.toString().equals("cellMolten")) {
-                WerkstoffLoader.cellMolten = prefix;
-                gtnhGT = true;
-                break;
-            }
-        }
-
-        if (!gtnhGT) {
-            WerkstoffLoader.HDCS.getGenerationFeatures().extraRecipes ^= 10;
-        }
-
-        if (WerkstoffLoader.cellMolten == null) {
-            WerkstoffLoader.cellMolten = EnumUtils.addNewOrePrefix(
-                    "cellMolten","Cells of Molten stuff", "Molten ",
-                    " Cell", true, true,
-                    true, true, false,
-                    false, false, true,
-                    false, false, 0b1000000,
-                    3628800L, 64, 31
-            );
-            //  GT_LanguageManager.addStringLocalization(".name", this.getDefaultLocalization(w));
-        } else {
-            WerkstoffLoader.cellMolten.mMaterialGenerationBits = 0b1000000;
-        }
-
-        try {
-            WerkstoffLoader.rotorMold = Enum.valueOf(ItemList.class, "Shape_Mold_Rotor");
-            WerkstoffLoader.rotorShape = Enum.valueOf(ItemList.class, "Shape_Extruder_Rotor");
-            WerkstoffLoader.smallGearShape = Enum.valueOf(ItemList.class, "Shape_Extruder_Small_Gear");
-            WerkstoffLoader.ringMold = Enum.valueOf(ItemList.class, "Shape_Mold_Ring");
-            WerkstoffLoader.boltMold = Enum.valueOf(ItemList.class, "Shape_Mold_Bolt");
-        } catch (NullPointerException | IllegalArgumentException ignored) {
-        }
-
-        //add tiberium
-        Element t = EnumUtils.createNewElement("Tr", 123L, 203L, 0L, -1L, null, "Tiberium", false);
-        blockCasing = EnumUtils.addNewOrePrefix("blockCasing",
-                "A Casing block for a Multiblock-Machine",
-                "Bolted ", " Casing",
-                true,
-                true,
-                true,
-                true,
-                false,
-                true,
-                false,
-                true,
-                false,
-                false,
-                0,
-                32659200L,
-                64,
-                -1);
-        blockCasingAdvanced = EnumUtils.addNewOrePrefix("blockCasingAdvanced",
-                "An Advanced Casing block for a Multiblock-Machine",
-                "Rebolted ", " Casing",
-                true,
-                true,
-                true,
-                true,
-                false,
-                true,
-                false,
-                true,
-                false,
-                false,
-                0,
-                32659200L,
-                64,
-                -1);
-        //add molten & regular capsuls
-        if (LoaderReference.Forestry) {
-            capsuleMolten = EnumUtils.addNewOrePrefix(
-                    "capsuleMolten", "Capsule of Molten stuff", "Molten ",
-                    " Capsule", true, true,
-                    true, true, false,
-                    false, false, true,
-                    false, false, 0b1000000,
-                    3628800L, 64, -1
-            );
-            capsule.mMaterialGenerationBits = 0b100000;
-            capsule.mDefaultStackSize = 64;
-        }
-
-        bottle.mDefaultStackSize = 1;
-        Werkstoff.GenerationFeatures.initPrefixLogic();
-        BW_GT_MaterialReference.init();
-    }
-
+public final class BW_Materials {
     //TODO:
     //FREE ID RANGE:                11_000-28_998
     //bartimaeusnek reserved             0-10_000
@@ -240,8 +66,8 @@ public class WerkstoffLoader {
             new Werkstoff.GenerationFeatures().onlyDust().addGems().enforceUnification(),
             4,
             TextureSet.SET_DIAMOND,
-            Collections.singletonList(WerkstoffLoader.Zirconium),
-            new Pair<>(WerkstoffLoader.Zirconium, 1),
+            Collections.singletonList(Zirconium),
+            new Pair<>(Zirconium, 1),
             new Pair<>(Materials.Oxygen, 2)
     );
     public static final Werkstoff FluorBuergerit = new Werkstoff(
@@ -438,8 +264,8 @@ public class WerkstoffLoader {
             new Werkstoff.GenerationFeatures().addGems(),
             19,
             TextureSet.SET_GEM_VERTICAL,
-            Arrays.asList(WerkstoffLoader.Zirconium, Materials.Silicon),
-            new Pair<>(WerkstoffLoader.Zirconium, 1),
+            Arrays.asList(Zirconium, Materials.Silicon),
+            new Pair<>(Zirconium, 1),
             new Pair<>(Materials.Silicon, 1),
             new Pair<>(Materials.Oxygen, 4)
     );
@@ -639,8 +465,8 @@ public class WerkstoffLoader {
             TextureSet.SET_METALLIC,
             //No Byproducts
             new Pair<>(Materials.IndiumGalliumPhosphide, 1),
-            new Pair<>(WerkstoffLoader.BismuthHydroBorat, 3),
-            new Pair<>(WerkstoffLoader.BismuthTellurite, 2)
+            new Pair<>(BismuthHydroBorat, 3),
+            new Pair<>(BismuthTellurite, 2)
     );
 
     public static final Werkstoff Prasiolite = new Werkstoff(
@@ -666,9 +492,9 @@ public class WerkstoffLoader {
             36,
             TextureSet.SET_MAGNETIC,
             //No Byproducts
-            new Pair<>(WerkstoffLoader.Prasiolite, 3),
-            new Pair<>(WerkstoffLoader.BismuthTellurite, 4),
-            new Pair<>(WerkstoffLoader.CubicZirconia, 1),
+            new Pair<>(Prasiolite, 3),
+            new Pair<>(BismuthTellurite, 4),
+            new Pair<>(CubicZirconia, 1),
             new Pair<>(Materials.SteelMagnetic, 1)
     );
     public static final Werkstoff Xenon = new Werkstoff(
@@ -756,14 +582,14 @@ public class WerkstoffLoader {
                     Materials.Boron,
                     Materials.Titanium,
                     Materials.Europium
-            ),
+                         ),
             new Pair<>(Materials.Boron, 1),
             new Pair<>(Materials.Argon, 1),
             new Pair<>(Materials.Titanium, 1),
             new Pair<>(Materials.Magic, 1),
             new Pair<>(Materials.Europium, 1),
             new Pair<>(Materials.Sulfur, 1),
-            new Pair<>(WerkstoffLoader.Neon, 1),
+            new Pair<>(Neon, 1),
             new Pair<>(Materials.Potassium, 1)
     );
     public static final Werkstoff PTConcentrate = new Werkstoff(
@@ -1038,7 +864,7 @@ public class WerkstoffLoader {
             new Werkstoff.GenerationFeatures().disable().onlyDust().addCells(),
             66,
             TextureSet.SET_DULL,
-            new Pair<>(WerkstoffLoader.Ruthenium, 1),
+            new Pair<>(Ruthenium, 1),
             new Pair<>(Materials.Oxygen, 4)
             //No Byproducts
     );
@@ -1051,7 +877,7 @@ public class WerkstoffLoader {
             new Werkstoff.GenerationFeatures().disable().addCells(),
             67,
             TextureSet.SET_FLUID,
-            new Pair<>(WerkstoffLoader.Ruthenium, 1),
+            new Pair<>(Ruthenium, 1),
             new Pair<>(Materials.Oxygen, 4),
             new Pair<>(Materials.Chlorine, 2),
             new Pair<>(Materials.Sodium, 2),
@@ -1291,7 +1117,7 @@ public class WerkstoffLoader {
             88,
             TextureSet.SET_METALLIC,
             new Pair<>(Materials.Palladium, 3),
-            new Pair<>(WerkstoffLoader.Rhodium, 1)
+            new Pair<>(Rhodium, 1)
     );
     public static final Werkstoff Tiberium = new Werkstoff(
             new short[]{0x22, 0xEE, 0x22},
@@ -1311,7 +1137,7 @@ public class WerkstoffLoader {
             new Werkstoff.GenerationFeatures().disable().onlyDust().addMolten().addMetalItems().addMixerRecipes().addSimpleMetalWorkingItems().addCraftingMetalWorkingItems().addMultipleIngotMetalWorkingItems(),
             90,
             TextureSet.SET_METALLIC,
-            new Pair<>(WerkstoffLoader.Ruthenium, 2),
+            new Pair<>(Ruthenium, 2),
             new Pair<>(Materials.Iridium, 1)
     );
     public static final Werkstoff Fluorspar = new Werkstoff(
@@ -1336,8 +1162,8 @@ public class WerkstoffLoader {
             new Pair<>(Materials.TungstenSteel, 12),
             new Pair<>(Materials.HSSE, 9),
             new Pair<>(Materials.HSSG, 6),
-            new Pair<>(WerkstoffLoader.Ruridit, 3),
-            new Pair<>(WerkstoffLoader.MagnetoResonaticDust, 2),
+            new Pair<>(Ruridit, 3),
+            new Pair<>(MagnetoResonaticDust, 2),
             new Pair<>(Materials.Plutonium, 1)
     );
     public static final Werkstoff Atheneite = new Werkstoff(
@@ -1349,7 +1175,7 @@ public class WerkstoffLoader {
             new Werkstoff.GenerationFeatures(),
             93,
             TextureSet.SET_SHINY,
-            new Pair<>(WerkstoffLoader.PDMetallicPowder, 3),
+            new Pair<>(PDMetallicPowder, 3),
             new Pair<>(Materials.Mercury, 3),
             new Pair<>(Materials.Arsenic, 1)
     );
@@ -1362,7 +1188,7 @@ public class WerkstoffLoader {
             new Werkstoff.GenerationFeatures(),
             94,
             TextureSet.SET_ROUGH,
-            new Pair<>(WerkstoffLoader.PDMetallicPowder, 3),
+            new Pair<>(PDMetallicPowder, 3),
             new Pair<>(Materials.Mercury, 1),
             new Pair<>(Materials.Tellurium, 1)
     );
@@ -1404,179 +1230,53 @@ public class WerkstoffLoader {
             new Pair<>(Materials.VanadiumSteel, 1),
             new Pair<>(Materials.DamascusSteel, 1)
     );
-
-    public static HashMap<OrePrefixes, BW_MetaGenerated_Items> items = new HashMap<>();
-    public static HashBiMap<Werkstoff, Fluid> fluids = HashBiMap.create();
-    public static HashBiMap<Werkstoff, Fluid> molten = HashBiMap.create();
-    public static Block BWOres;
-    public static Block BWSmallOres;
-    public static Block BWBlocks;
-    public static Block BWBlockCasings;
-    public static Block BWBlockCasingsAdvanced;
-    public static boolean registered;
-    public static final HashSet<OrePrefixes> ENABLED_ORE_PREFIXES = new HashSet<>();
-
-    public static Werkstoff getWerkstoff(String Name) {
-        try {
-            Field f = WerkstoffLoader.class.getField(Name);
-            return (Werkstoff) f.get(null);
-        } catch (IllegalAccessException | NoSuchFieldException | ClassCastException e) {
-            MainMod.LOGGER.catching(e);
+    
+    public static void init() {
+        if (!gtnhGT) {
+            HDCS.getGenerationFeatures().extraRecipes ^= 10;
         }
-        return Werkstoff.default_null_Werkstoff;
-    }
-
-    public static ItemStack getCorrespondingItemStack(OrePrefixes orePrefixes, Werkstoff werkstoff) {
-        return WerkstoffLoader.getCorrespondingItemStack(orePrefixes, werkstoff, 1);
-    }
-
-    public static ItemStack getCorrespondingItemStackUnsafe(OrePrefixes orePrefixes, Werkstoff werkstoff, int amount) {
-        if (!werkstoff.getGenerationFeatures().enforceUnification) {
-            ItemStack ret = GT_OreDictUnificator.get(orePrefixes, werkstoff.getBridgeMaterial(), amount);
-            if (ret != null)
-                return ret;
-            ret = OreDictHandler.getItemStack(werkstoff.getVarName(), orePrefixes, amount);
-            if (ret != null)
-                return ret;
-        }
-        if (orePrefixes == ore)
-            return new ItemStack(WerkstoffLoader.BWOres, amount, werkstoff.getmID());
-        else if (orePrefixes == oreSmall)
-            return new ItemStack(WerkstoffLoader.BWSmallOres, amount, werkstoff.getmID());
-        else if (orePrefixes == block)
-            return new ItemStack(WerkstoffLoader.BWBlocks, amount, werkstoff.getmID());
-        else if (orePrefixes == WerkstoffLoader.blockCasing)
-            return new ItemStack(WerkstoffLoader.BWBlockCasings, amount, werkstoff.getmID());
-        else if (orePrefixes == WerkstoffLoader.blockCasingAdvanced)
-            return new ItemStack(WerkstoffLoader.BWBlockCasingsAdvanced, amount, werkstoff.getmID());
-        else if (WerkstoffLoader.items.get(orePrefixes) == null)
-            return null;
-        return new ItemStack(WerkstoffLoader.items.get(orePrefixes), amount, werkstoff.getmID()).copy();
-    }
-
-    public static ItemStack getCorrespondingItemStack(OrePrefixes orePrefixes, Werkstoff werkstoff, int amount) {
-        ItemStack stack = getCorrespondingItemStackUnsafe(orePrefixes, werkstoff, amount);
-        if (stack != null)
-            return stack;
-        else
-            MainMod.LOGGER.catching(Level.ERROR, new Exception("NO SUCH ITEM! " + orePrefixes + werkstoff.getVarName() + " If you encounter this as a user, make sure to contact the authors of the pack/the mods you're playing! " +
-                    "If you are a Developer, you forgot to enable " + orePrefixes + " OrePrefix for Werkstoff " + werkstoff.getDefaultName()));
-        return new ItemStack(WerkstoffLoader.items.get(orePrefixes), amount, werkstoff.getmID()).copy();
-    }
-
-    public static void runInit() {
-        MainMod.LOGGER.info("Making Meta Items for BW Materials");
-        long timepre = System.nanoTime();
-        WerkstoffAdderRegistry.run();
         addSubTags();
-        addItemsForGeneration();
-        runAdditionalOreDict();
-        long timepost = System.nanoTime();
-        MainMod.LOGGER.info("Making Meta Items for BW Materials took " + (timepost - timepre) + "ns/" + ((timepost - timepre) / 1000000) + "ms/" + ((timepost - timepre) / 1000000000) + "s!");
-    }
-
-    public static void run() {
-        if (!registered) {
-            MainMod.LOGGER.info("Loading Processing Recipes for BW Materials");
-            long timepre = System.nanoTime();
-            ProgressManager.ProgressBar progressBar = ProgressManager.push("Register BW Materials", Werkstoff.werkstoffHashSet.size() + 1);
-            DebugLog.log("Loading Recipes" + (System.nanoTime() - timepre));
-            Integer[] clsArr = new Integer[0];
-            int size = 0;
-            if (LoaderReference.betterloadingscreen)
-                clsArr = CLSCompat.initCls();
-
-            IWerkstoffRunnable[] werkstoffRunnables = new IWerkstoffRunnable[]{
-                    new ToolLoader(),
-                    new DustLoader(),
-                    new GemLoader(),
-                    new SimpleMetalLoader(),
-                    new CasingLoader(),
-                    new AspectLoader(),
-                    new OreLoader(),
-                    new CrushedLoader(),
-                    new CraftingMaterialLoader(),
-                    new CellLoader(),
-                    new MoltenCellLoader(),
-                    new MultipleMetalLoader(),
-                    new MetalLoader(),
-                    new BlockLoader()
-            };
-
-            long timepreone = 0;
-            for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
-                timepreone = System.nanoTime();
-                DebugLog.log("Werkstoff is null or id < 0 ? " + (werkstoff == null || werkstoff.getmID() < 0) + " " + (System.nanoTime() - timepreone));
-                if (werkstoff == null || werkstoff.getmID() < 0) {
-                    progressBar.step("");
-                    continue;
-                }
-                if (LoaderReference.betterloadingscreen)
-                    size = CLSCompat.invokeStepSize(werkstoff, clsArr, size);
-                DebugLog.log("Werkstoff: " + werkstoff.getDefaultName() + " " + (System.nanoTime() - timepreone));
-                for (IWerkstoffRunnable runnable : werkstoffRunnables) {
-                    String loaderName = runnable.getClass().getSimpleName();
-                    DebugLog.log( loaderName + " started " + (System.nanoTime() - timepreone));
-                    runnable.run(werkstoff);
-                    DebugLog.log(loaderName + " done " + (System.nanoTime() - timepreone));
-                }
-                DebugLog.log("Done" + " " + (System.nanoTime() - timepreone));
-                progressBar.step(werkstoff.getDefaultName());
-            }
-            DebugLog.log("Loading New Circuits" + " " + (System.nanoTime() - timepreone));
-            BW_CircuitsLoader.initNewCircuits();
-
-            if (LoaderReference.betterloadingscreen)
-                CLSCompat.disableCls();
-
-            progressBar.step("Load Additional Recipes");
-            AdditionalRecipes.run();
-            ProgressManager.pop(progressBar);
-            long timepost = System.nanoTime();
-            MainMod.LOGGER.info("Loading Processing Recipes for BW Materials took " + (timepost - timepre) + "ns/" + ((timepost - timepre) / 1000000) + "ms/" + ((timepost - timepre) / 1000000000) + "s!");
-            registered = true;
-        }
     }
 
     private static void addSubTags() {
-        WerkstoffLoader.CubicZirconia.getStats().setDurOverride(Materials.Diamond.mDurability);
-        WerkstoffLoader.HDCS.getStats().setSpeedOverride(Materials.HSSS.mToolSpeed);
-        WerkstoffLoader.HDCS.getStats().setDurMod(10f);
-        Materials.Helium.add(WerkstoffLoader.NOBLE_GAS);
-        WerkstoffLoader.Neon.add(WerkstoffLoader.NOBLE_GAS);
-        Materials.Argon.add(WerkstoffLoader.NOBLE_GAS);
-        WerkstoffLoader.Krypton.add(WerkstoffLoader.NOBLE_GAS);
-        WerkstoffLoader.Xenon.add(WerkstoffLoader.NOBLE_GAS, WerkstoffLoader.ANAEROBE_GAS);
-        Materials.Radon.add(WerkstoffLoader.NOBLE_GAS);
-        WerkstoffLoader.Oganesson.add(WerkstoffLoader.NOBLE_GAS, WerkstoffLoader.ANAEROBE_GAS);
+        CubicZirconia.getStats().setDurOverride(Materials.Diamond.mDurability);
+        HDCS.getStats().setSpeedOverride(Materials.HSSS.mToolSpeed);
+        HDCS.getStats().setDurMod(10f);
+        Materials.Helium.add(NOBLE_GAS);
+        Neon.add(NOBLE_GAS);
+        Materials.Argon.add(NOBLE_GAS);
+        Krypton.add(NOBLE_GAS);
+        Xenon.add(NOBLE_GAS, ANAEROBE_GAS);
+        Materials.Radon.add(NOBLE_GAS);
+        Oganesson.add(NOBLE_GAS, ANAEROBE_GAS);
 
-        Materials.Nitrogen.add(WerkstoffLoader.ANAEROBE_GAS);
+        Materials.Nitrogen.add(ANAEROBE_GAS);
 
-        WerkstoffLoader.Calcium.add(WerkstoffLoader.ANAEROBE_SMELTING);
+        Calcium.add(ANAEROBE_SMELTING);
 
-        WerkstoffLoader.LuVTierMaterial.add(WerkstoffLoader.NOBLE_GAS_SMELTING);
-        WerkstoffLoader.Ruridit.add(WerkstoffLoader.NOBLE_GAS_SMELTING);
-        WerkstoffLoader.AdemicSteel.add(WerkstoffLoader.NOBLE_GAS_SMELTING);
+        LuVTierMaterial.add(NOBLE_GAS_SMELTING);
+        Ruridit.add(NOBLE_GAS_SMELTING);
+        AdemicSteel.add(NOBLE_GAS_SMELTING);
 
-        WerkstoffLoader.MagnetoResonaticDust.add(WerkstoffLoader.NO_BLAST);
+        MagnetoResonaticDust.add(NO_BLAST);
 
         //Calcium Smelting block
         Materials.Calcium.mBlastFurnaceRequired = true;
 
-        Materials.Salt.mDurability = WerkstoffLoader.Salt.getDurability();
-        Materials.Spodumene.mDurability = WerkstoffLoader.Spodumen.getDurability();
-        Materials.RockSalt.mDurability = WerkstoffLoader.RockSalt.getDurability();
-        Materials.Calcium.mDurability = WerkstoffLoader.Calcium.getDurability();
+        Materials.Salt.mDurability = Salt.getDurability();
+        Materials.Spodumene.mDurability = Spodumen.getDurability();
+        Materials.RockSalt.mDurability = RockSalt.getDurability();
+        Materials.Calcium.mDurability = Calcium.getDurability();
 
-        Materials.Salt.mToolSpeed = WerkstoffLoader.Salt.getToolSpeed();
-        Materials.Spodumene.mToolSpeed = WerkstoffLoader.Spodumen.getToolSpeed();
-        Materials.RockSalt.mToolSpeed = WerkstoffLoader.RockSalt.getToolSpeed();
-        Materials.Calcium.mToolSpeed = WerkstoffLoader.Calcium.getToolSpeed();
+        Materials.Salt.mToolSpeed = Salt.getToolSpeed();
+        Materials.Spodumene.mToolSpeed = Spodumen.getToolSpeed();
+        Materials.RockSalt.mToolSpeed = RockSalt.getToolSpeed();
+        Materials.Calcium.mToolSpeed = Calcium.getToolSpeed();
 
-        Materials.Salt.mToolQuality = WerkstoffLoader.Salt.getToolQuality();
-        Materials.Spodumene.mToolQuality = WerkstoffLoader.Spodumen.getToolQuality();
-        Materials.RockSalt.mToolQuality = WerkstoffLoader.RockSalt.getToolQuality();
-        Materials.Calcium.mToolQuality = WerkstoffLoader.Calcium.getToolQuality();
+        Materials.Salt.mToolQuality = Salt.getToolQuality();
+        Materials.Spodumene.mToolQuality = Spodumen.getToolQuality();
+        Materials.RockSalt.mToolQuality = RockSalt.getToolQuality();
+        Materials.Calcium.mToolQuality = Calcium.getToolQuality();
 
         for (Werkstoff W : Werkstoff.werkstoffHashSet) {
             for (Pair<ISubTagContainer, Integer> pair : W.getContents().getValue().toArray(new Pair[0])) {
@@ -1599,274 +1299,8 @@ public class WerkstoffLoader {
         }
     }
 
-    public static long toGenerateGlobal;
+    public static void cubicZiconiaIndustrialDiamond() {
+        GT_OreDictUnificator.registerOre("craftingIndustrialDiamond", CubicZirconia.get(gemExquisite));
 
-    private static void addItemsForGeneration() {
-        for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
-            if (werkstoff.hasItemType(cell)) {
-                if (!FluidRegistry.isFluidRegistered(werkstoff.getDefaultName())) {
-                    DebugLog.log("Adding new Fluid: " + werkstoff.getDefaultName());
-                    GT_Fluid fluid = (GT_Fluid) new GT_Fluid(werkstoff.getDefaultName(), "molten.autogenerated", werkstoff.getRGBA()).setGaseous(werkstoff.getStats().isGas());
-                    FluidRegistry.registerFluid(fluid);
-                    WerkstoffLoader.fluids.put(werkstoff, fluid);
-                } else {
-                    WerkstoffLoader.fluids.put(werkstoff, FluidRegistry.getFluid(werkstoff.getDefaultName()));
-                }
-            }
-            if (werkstoff.hasItemType(WerkstoffLoader.cellMolten)) {
-                if (!FluidRegistry.isFluidRegistered("molten." + werkstoff.getDefaultName())) {
-                    DebugLog.log("Adding new Molten: " + werkstoff.getDefaultName());
-                    Fluid fluid = new GT_Fluid("molten." + werkstoff.getDefaultName(), "molten.autogenerated", werkstoff.getRGBA());
-                    if (werkstoff.getStats().getMeltingPoint() > 0)
-                        fluid = fluid.setTemperature(werkstoff.getStats().getMeltingPoint());
-                    FluidRegistry.registerFluid(fluid);
-                    //GT_LanguageManager.addStringLocalization("Molten." + werkstoff.getDefaultName(), "Molten "+ werkstoff.getDefaultName());
-                    GT_LanguageManager.addStringLocalization(fluid.getUnlocalizedName(), "Molten " + werkstoff.getDefaultName());
-                    WerkstoffLoader.molten.put(werkstoff, fluid);
-                } else {
-                    WerkstoffLoader.molten.put(werkstoff, FluidRegistry.getFluid(werkstoff.getDefaultName()));
-                }
-            }
-            for (OrePrefixes p : values())
-                if (!werkstoff.getGenerationFeatures().enforceUnification && (werkstoff.getGenerationFeatures().toGenerate & p.mMaterialGenerationBits) != 0 && OreDictHandler.getItemStack(werkstoff.getDefaultName(), p, 1) != null) {
-                    DebugLog.log("Found: " + (p + werkstoff.getVarName()) + " in oreDict, disable and reroute my Items to that, also add a Tooltip.");
-                    werkstoff.getGenerationFeatures().setBlacklist(p);
-                }
-            WerkstoffLoader.toGenerateGlobal = (WerkstoffLoader.toGenerateGlobal | werkstoff.getGenerationFeatures().toGenerate);
-        }
-        DebugLog.log("GlobalGeneration: " + WerkstoffLoader.toGenerateGlobal);
-        if ((WerkstoffLoader.toGenerateGlobal & 0b1) != 0) {
-            WerkstoffLoader.items.put(dust, new BW_MetaGenerated_Items(dust));
-            WerkstoffLoader.items.put(dustTiny, new BW_MetaGenerated_Items(dustTiny));
-            WerkstoffLoader.items.put(dustSmall, new BW_MetaGenerated_Items(dustSmall));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b10) != 0) {
-            WerkstoffLoader.items.put(ingot, new BW_MetaGenerated_Items(ingot));
-            WerkstoffLoader.items.put(ingotHot, new BW_MetaGenerated_Items(ingotHot));    //1750
-            WerkstoffLoader.items.put(nugget, new BW_MetaGenerated_Items(nugget));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b100) != 0) {
-            WerkstoffLoader.items.put(gem, new BW_MetaGenerated_Items(gem));
-            WerkstoffLoader.items.put(gemChipped, new BW_MetaGenerated_Items(gemChipped));
-            WerkstoffLoader.items.put(gemExquisite, new BW_MetaGenerated_Items(gemExquisite));
-            WerkstoffLoader.items.put(gemFlawed, new BW_MetaGenerated_Items(gemFlawed));
-            WerkstoffLoader.items.put(gemFlawless, new BW_MetaGenerated_Items(gemFlawless));
-            WerkstoffLoader.items.put(lens, new BW_MetaGenerated_Items(lens));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b1000) != 0) {
-            gameRegistryHandler();
-            WerkstoffLoader.items.put(crushed, new BW_MetaGenerated_Items(crushed));
-            WerkstoffLoader.items.put(crushedPurified, new BW_MetaGenerated_Items(crushedPurified));
-            WerkstoffLoader.items.put(crushedCentrifuged, new BW_MetaGenerated_Items(crushedCentrifuged));
-            WerkstoffLoader.items.put(dustPure, new BW_MetaGenerated_Items(dustPure));
-            WerkstoffLoader.items.put(dustImpure, new BW_MetaGenerated_Items(dustImpure));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b10000) != 0) {
-            WerkstoffLoader.items.put(cell, new BW_MetaGenerated_Items(cell));
-            //WerkstoffLoader.items.put(bottle, new BW_MetaGenerated_Items(bottle));
-            if (LoaderReference.Forestry)
-                WerkstoffLoader.items.put(capsule, new BW_MetaGenerated_Items(capsule));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b100000) != 0) {
-            WerkstoffLoader.items.put(cellPlasma, new BW_MetaGenerated_Items(cellPlasma));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b1000000) != 0) {
-            WerkstoffLoader.items.put(WerkstoffLoader.cellMolten, new BW_MetaGenerated_Items(WerkstoffLoader.cellMolten));
-            if (LoaderReference.Forestry)
-                WerkstoffLoader.items.put(capsuleMolten, new BW_MetaGenerated_Items(capsuleMolten));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b10000000) != 0) {
-            WerkstoffLoader.items.put(plate, new BW_MetaGenerated_Items(plate));
-            WerkstoffLoader.items.put(stick, new BW_MetaGenerated_Items(stick));
-            WerkstoffLoader.items.put(stickLong, new BW_MetaGenerated_Items(stickLong));
-            WerkstoffLoader.items.put(toolHeadWrench, new BW_MetaGenerated_Items(toolHeadWrench));
-            WerkstoffLoader.items.put(toolHeadHammer, new BW_MetaGenerated_Items(toolHeadHammer));
-            WerkstoffLoader.items.put(toolHeadSaw, new BW_MetaGenerated_Items(toolHeadSaw));
-            WerkstoffLoader.items.put(turbineBlade, new BW_MetaGenerated_Items(turbineBlade));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b100000000) != 0) {
-            WerkstoffLoader.items.put(gearGt, new BW_MetaGenerated_Items(gearGt));
-            WerkstoffLoader.items.put(gearGtSmall, new BW_MetaGenerated_Items(gearGtSmall));
-            WerkstoffLoader.items.put(bolt, new BW_MetaGenerated_Items(bolt));
-            WerkstoffLoader.items.put(screw, new BW_MetaGenerated_Items(screw));
-            WerkstoffLoader.items.put(ring, new BW_MetaGenerated_Items(ring));
-            WerkstoffLoader.items.put(spring, new BW_MetaGenerated_Items(spring));
-            WerkstoffLoader.items.put(springSmall, new BW_MetaGenerated_Items(springSmall));
-            WerkstoffLoader.items.put(rotor, new BW_MetaGenerated_Items(rotor));
-            WerkstoffLoader.items.put(wireFine, new BW_MetaGenerated_Items(wireFine));
-        }
-        if ((WerkstoffLoader.toGenerateGlobal & 0b1000000000) != 0) {
-            WerkstoffLoader.items.put(plateDouble, new BW_MetaGenerated_Items(plateDouble));
-            WerkstoffLoader.items.put(plateTriple, new BW_MetaGenerated_Items(plateTriple));
-            WerkstoffLoader.items.put(plateQuadruple, new BW_MetaGenerated_Items(plateQuadruple));
-            WerkstoffLoader.items.put(plateQuintuple, new BW_MetaGenerated_Items(plateQuintuple));
-            WerkstoffLoader.items.put(plateDense, new BW_MetaGenerated_Items(plateDense));
-            WerkstoffLoader.items.put(ingotDouble, new BW_MetaGenerated_Items(ingotDouble));
-            WerkstoffLoader.items.put(ingotTriple, new BW_MetaGenerated_Items(ingotTriple));
-            WerkstoffLoader.items.put(ingotQuadruple, new BW_MetaGenerated_Items(ingotQuadruple));
-            WerkstoffLoader.items.put(ingotQuintuple, new BW_MetaGenerated_Items(ingotQuintuple));
-        }
-        ENABLED_ORE_PREFIXES.addAll(WerkstoffLoader.items.keySet());
-        ENABLED_ORE_PREFIXES.add(ore);
-        ENABLED_ORE_PREFIXES.add(oreSmall);
-        WerkstoffLoader.runGTItemDataRegistrator();
-    }
-
-    static void gameRegistryHandler() {
-        if (SideReference.Side.Client)
-            RenderingRegistry.registerBlockHandler(BW_Renderer_Block_Ores.INSTANCE);
-
-        GameRegistry.registerTileEntity(BW_MetaGeneratedOreTE.class, "bw.blockoresTE");
-        GameRegistry.registerTileEntity(BW_MetaGeneratedSmallOreTE.class, "bw.blockoresSmallTE");
-        GameRegistry.registerTileEntity(BW_MetaGenerated_WerkstoffBlock_TE.class, "bw.werkstoffblockTE");
-        GameRegistry.registerTileEntity(BW_MetaGeneratedBlocks_Casing_TE.class, "bw.werkstoffblockcasingTE");
-        GameRegistry.registerTileEntity(BW_MetaGeneratedBlocks_CasingAdvanced_TE.class, "bw.werkstoffblockscasingadvancedTE");
-
-        WerkstoffLoader.BWOres = new BW_MetaGenerated_Ores(Material.rock, BW_MetaGeneratedOreTE.class, "bw.blockores");
-        WerkstoffLoader.BWSmallOres = new BW_MetaGenerated_SmallOres(Material.rock, BW_MetaGeneratedSmallOreTE.class, "bw.blockoresSmall");
-        WerkstoffLoader.BWBlocks = new BW_MetaGenerated_WerkstoffBlocks(Material.iron, BW_MetaGenerated_WerkstoffBlock_TE.class, "bw.werkstoffblocks");
-        WerkstoffLoader.BWBlockCasings = new BW_MetaGeneratedBlocks_Casing(Material.iron, BW_MetaGeneratedBlocks_Casing_TE.class, "bw.werkstoffblockscasing", blockCasing);
-        WerkstoffLoader.BWBlockCasingsAdvanced = new BW_MetaGeneratedBlocks_Casing(Material.iron, BW_MetaGeneratedBlocks_CasingAdvanced_TE.class, "bw.werkstoffblockscasingadvanced", blockCasingAdvanced);
-
-        GameRegistry.registerBlock(WerkstoffLoader.BWOres, BW_MetaGeneratedBlock_Item.class, "bw.blockores.01");
-        GameRegistry.registerBlock(WerkstoffLoader.BWSmallOres, BW_MetaGeneratedBlock_Item.class, "bw.blockores.02");
-        GameRegistry.registerBlock(WerkstoffLoader.BWBlocks, BW_MetaGeneratedBlock_Item.class, "bw.werkstoffblocks.01");
-        if (!ConfigHandler.disableBoltedBlocksCasing)
-            GameRegistry.registerBlock(WerkstoffLoader.BWBlockCasings, BW_MetaGeneratedBlock_Item.class, "bw.werkstoffblockscasing.01");
-        if (!ConfigHandler.disableReboltedBlocksCasing)
-            GameRegistry.registerBlock(WerkstoffLoader.BWBlockCasingsAdvanced, BW_MetaGeneratedBlock_Item.class, "bw.werkstoffblockscasingadvanced.01");
-
-        GTMetaItemEnhancer.addAdditionalOreDictToForestry();
-        GTMetaItemEnhancer.init();
-    }
-
-    private static void runGTItemDataRegistrator() {
-        IWerkstoffRunnable[] registrations = new IWerkstoffRunnable[] {
-                new BridgeMaterialsLoader(),
-                new AssociationLoader(),
-                new CasingRegistrator()
-        };
-        for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
-            for (IWerkstoffRunnable registration : registrations) {
-                    registration.run(werkstoff);
-            }
-        }
-        addFakeItemDataToInWorldBlocksAndCleanUpFakeData();
-        addVanillaCasingsToGTOreDictUnificator();
-    }
-
-    public static void addVanillaCasingsToGTOreDictUnificator(){
-        GT_OreDictUnificator.addAssociation(
-                blockCasing, Materials.Aluminium,
-                ItemList.Casing_FrostProof.get(1L),
-                false
-        );
-        GT_OreDictUnificator.addAssociation(
-                blockCasing, Materials.Nickel,
-                ItemList.Casing_HeatProof.get(1L),
-                false
-        );
-        GT_OreDictUnificator.addAssociation(
-                blockCasing, Materials.Lead,
-                ItemList.Casing_RadiationProof.get(1L),
-                false
-        );
-        GT_OreDictUnificator.addAssociation(
-                blockCasing, Materials.Steel,
-                ItemList.Casing_SolidSteel.get(1L),
-                false
-        );
-        GT_OreDictUnificator.addAssociation(
-                blockCasing, Materials.TungstenSteel,
-                ItemList.Casing_RobustTungstenSteel.get(1L),
-                false
-        );
-        GT_OreDictUnificator.addAssociation(
-                blockCasing, Materials.Polytetrafluoroethylene,
-                ItemList.Casing_Chemically_Inert.get(1L),
-                false
-        );
-    }
-
-    /**
-     * very hacky way to make my ores/blocks/smallores detectable by gt assosication in world, well at least the prefix.
-     * used for the miners mostly
-     * removing this hacky material from the materials map instantly. we only need the item data.
-     */
-    private static void addFakeItemDataToInWorldBlocksAndCleanUpFakeData() {
-
-        Map<String, Materials> MATERIALS_MAP = null;
-
-        try {
-            Field f = Materials.class.getDeclaredField("MATERIALS_MAP");
-            f.setAccessible(true);
-            MATERIALS_MAP = (Map<String, Materials>) f.get(null);
-        } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
-            e.printStackTrace();
-        }
-
-        if (MATERIALS_MAP == null)
-            throw new NullPointerException("MATERIALS_MAP null!");
-
-        Materials oreMat = new Materials(-1, null, 0, 0, 0, false, "bwores", "bwores", null, true, null);
-        Materials smallOreMat = new Materials(-1, null, 0, 0, 0, false, "bwsmallores", "bwsmallores", null, true, null);
-        Materials blockMat = new Materials(-1, null, 0, 0, 0, false, "bwblocks", "bwblocks", null, true, null);
-
-        for (int i = 0; i < 16; i++) {
-            GT_OreDictUnificator.addAssociation(ore, oreMat, new ItemStack(BWOres, 1, i), true);
-            GT_OreDictUnificator.addAssociation(oreSmall, smallOreMat, new ItemStack(BWSmallOres, 1, i), true);
-            GT_OreDictUnificator.addAssociation(block, blockMat, new ItemStack(BWBlocks, 1, i), true);
-        }
-
-        MATERIALS_MAP.remove("bwores");
-        MATERIALS_MAP.remove("bwsmallores");
-        MATERIALS_MAP.remove("bwblocks");
-    }
-
-    public static void removeIC2Recipes() {
-        try {
-            Set<Map.Entry<IRecipeInput, RecipeOutput>> remset = new HashSet<>();
-            for (Map.Entry<IRecipeInput, RecipeOutput> curr : Recipes.macerator.getRecipes().entrySet()) {
-                if (curr.getKey() instanceof RecipeInputOreDict) {
-                    if (((RecipeInputOreDict) curr.getKey()).input.equalsIgnoreCase("oreNULL")) {
-                        remset.add(curr);
-                    }
-                    for (ItemStack stack : curr.getValue().items) {
-                        if (stack.getItem() instanceof BW_MetaGenerated_Items)
-                            remset.add(curr);
-                    }
-                }
-            }
-            Recipes.macerator.getRecipes().entrySet().removeAll(remset);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void runAdditionalOreDict() {
-        for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
-            if (werkstoff.hasItemType(ore)) {
-                GT_OreDictUnificator.registerOre(ore + werkstoff.getVarName(), werkstoff.get(ore));
-                GT_OreDictUnificator.registerOre(oreSmall + werkstoff.getVarName(), werkstoff.get(oreSmall));
-                werkstoff.getADDITIONAL_OREDICT().forEach(e -> OreDictionary.registerOre(ore + e, werkstoff.get(ore)));
-                werkstoff.getADDITIONAL_OREDICT().forEach(e -> OreDictionary.registerOre(oreSmall + e, werkstoff.get(oreSmall)));
-            }
-
-            if (werkstoff.hasItemType(gem))
-                OreDictionary.registerOre("craftingLens" + BW_ColorUtil.getDyeFromColor(werkstoff.getRGBA()).mName.replace(" ", ""), werkstoff.get(lens));
-
-            if (werkstoff.hasItemType(gem) || werkstoff.hasItemType(ingot)) {
-                GT_OreDictUnificator.registerOre(block + werkstoff.getVarName(), werkstoff.get(block));
-                werkstoff.getADDITIONAL_OREDICT().forEach(e -> OreDictionary.registerOre(block + e, werkstoff.get(block)));
-            }
-
-            werkstoff.getADDITIONAL_OREDICT()
-                    .forEach(s -> ENABLED_ORE_PREFIXES
-                            .stream()
-                            .filter(o -> Objects.nonNull(werkstoff.get(o)))
-                            .forEach(od -> OreDictionary.registerOre(od + s, werkstoff.get(od))));
-        }
-
-        GT_OreDictUnificator.registerOre("craftingIndustrialDiamond", WerkstoffLoader.CubicZirconia.get(gemExquisite));
     }
 }

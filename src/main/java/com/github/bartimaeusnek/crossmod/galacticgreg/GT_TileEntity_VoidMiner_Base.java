@@ -32,9 +32,6 @@ import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_OreLayer;
-import com.github.bartimaeusnek.bartworks.system.oregen.BW_WorldGenRoss128b;
-import com.github.bartimaeusnek.bartworks.system.oregen.BW_WorldGenRoss128ba;
-import com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference;
 import com.github.bartimaeusnek.bartworks.util.Pair;
 import com.google.common.collect.ArrayListMultimap;
 import gregtech.api.GregTech_API;
@@ -42,7 +39,6 @@ import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.Materials;
 import gregtech.api.interfaces.ISubTagContainer;
 import gregtech.api.objects.XSTR;
-import gregtech.api.util.GT_LanguageManager;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import gregtech.common.GT_Worldgen_GT_Ore_Layer;
 import gregtech.common.GT_Worldgen_GT_Ore_SmallPieces;
@@ -59,6 +55,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static bloodasp.galacticgreg.registry.GalacticGregRegistry.getModContainers;
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.*;
 import static gregtech.api.enums.GT_Values.VN;
 
 @SuppressWarnings("ALL")
@@ -66,10 +63,10 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
 
     private static ArrayListMultimap<Integer,Pair<Pair<Integer,Boolean>, Float>> extraDropsDimMap = ArrayListMultimap.create();
     private static FluidStack[] NOBLE_GASSES = new FluidStack[]{
-            WerkstoffLoader.Neon.getFluidOrGas(1),
-            WerkstoffLoader.Krypton.getFluidOrGas(1),
-            WerkstoffLoader.Xenon.getFluidOrGas(1),
-            WerkstoffLoader.Oganesson.getFluidOrGas(1)
+            Neon.getFluidOrGas(1),
+            Krypton.getFluidOrGas(1),
+            Xenon.getFluidOrGas(1),
+            Oganesson.getFluidOrGas(1)
     };
 
     private HashMap<Pair<Integer,Boolean>, Float> dropmap = null;

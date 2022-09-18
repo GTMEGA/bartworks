@@ -24,10 +24,8 @@ package com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration;
 
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
-import com.github.bartimaeusnek.bartworks.util.BWRecipes;
+import com.github.bartimaeusnek.bartworks.util.BWBasicRecipes.DynamicGTRecipe;
 import com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTech_API;
@@ -48,6 +46,10 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.*;
 
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.ArInGaPhoBiBoTe;
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.MagnetoResonaticDust;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.*;
+
 
 public class BW_Meta_Items {
 
@@ -62,8 +64,8 @@ public class BW_Meta_Items {
         BW_Meta_Items.NEWCIRCUITS.addItem(1,"Sliced Circuit","",SubTag.NO_UNIFICATION,SubTag.NO_RECYCLING);
         BW_Meta_Items.NEWCIRCUITS.addItem(2,"Raw Imprint supporting Board","A Raw Board needed for Circuit Imprints");
         BW_Meta_Items.NEWCIRCUITS.addItem(3,"Imprint supporting Board","A Board needed for Circuit Imprints");
-        GT_Values.RA.addFormingPressRecipe(WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.dust,1),WerkstoffLoader.ArInGaPhoBiBoTe.get(OrePrefixes.dust,4),BW_Meta_Items.NEWCIRCUITS.getStack(2),300,480);
-        GT_Recipe.GT_Recipe_Map.sAutoclaveRecipes.add(new BWRecipes.DynamicGTRecipe(false,new ItemStack[]{BW_Meta_Items.NEWCIRCUITS.getStack(2)},new ItemStack[]{BW_Meta_Items.NEWCIRCUITS.getStack(3)},null,new int[]{7500},new FluidStack[]{Materials.SolderingAlloy.getMolten(576)},null,300, BW_Util.getMachineVoltageFromTier(4), BW_Util.CLEANROOM));
+        GT_Values.RA.addFormingPressRecipe(MagnetoResonaticDust.get(OrePrefixes.dust,1),ArInGaPhoBiBoTe.get(OrePrefixes.dust,4),BW_Meta_Items.NEWCIRCUITS.getStack(2),300,480);
+        GT_Recipe.GT_Recipe_Map.sAutoclaveRecipes.add(new DynamicGTRecipe(false, new ItemStack[]{BW_Meta_Items.NEWCIRCUITS.getStack(2)}, new ItemStack[]{BW_Meta_Items.NEWCIRCUITS.getStack(3)}, null, new int[]{7500}, new FluidStack[]{Materials.SolderingAlloy.getMolten(576)}, null, 300, getMachineVoltageFromTier(4), CLEANROOM));
     }
 
     @SuppressWarnings("deprecation")
@@ -99,7 +101,7 @@ public class BW_Meta_Items {
         }
 
         public final ItemStack addCircuit(int aID, String aEnglish, String aToolTip, int tier){
-            CircuitImprintLoader.bwCircuitTagMap.put(new CircuitData(BW_Util.getMachineVoltageFromTier(Math.min(1,(tier-2))),tier > 2 ? BW_Util.CLEANROOM : 0,(byte)tier), new ItemStack(BW_Meta_Items.NEWCIRCUITS,1,aID));
+            CircuitImprintLoader.bwCircuitTagMap.put(new CircuitData(getMachineVoltageFromTier(Math.min(1,(tier-2))),tier > 2 ? CLEANROOM : 0,(byte)tier), new ItemStack(BW_Meta_Items.NEWCIRCUITS,1,aID));
             return this.addItem(aID, aEnglish, aToolTip,SubTag.NO_UNIFICATION);
         }
 
@@ -139,14 +141,14 @@ public class BW_Meta_Items {
 
             for(short i = 0; i < CircuitImprintLoader.reverseIDs; ++i) {
                 if (this.mEnabledItems.get(i)) {
-                    BW_Util.set2DCoordTo1DArray(i,0,2,aIconRegister.registerIcon("gregtech:" + (GT_Config.troll ? "troll" : this.getUnlocalizedName() + "/" + i)),this.mIconList);
+                    set2DCoordTo1DArray(i,0,2,aIconRegister.registerIcon("gregtech:" + (GT_Config.troll ? "troll" : this.getUnlocalizedName() + "/" + i)),this.mIconList);
                 }
             }
 
             for (short i = CircuitImprintLoader.reverseIDs; i < Short.MAX_VALUE; i++) {
                 if (this.mEnabledItems.get(i)) {
-                    BW_Util.set2DCoordTo1DArray(i,0,2, Objects.requireNonNull(CircuitImprintLoader.circuitIIconRefs.get(i)).get(1).getIconIndex(),this.mIconList);
-                    BW_Util.set2DCoordTo1DArray(i,1,2,aIconRegister.registerIcon(MainMod.MOD_ID+":WrapOverlay"),this.mIconList);
+                    set2DCoordTo1DArray(i,0,2, Objects.requireNonNull(CircuitImprintLoader.circuitIIconRefs.get(i)).get(1).getIconIndex(),this.mIconList);
+                    set2DCoordTo1DArray(i,1,2,aIconRegister.registerIcon(MainMod.MOD_ID+":WrapOverlay"),this.mIconList);
                     //aIconRegister.registerIcon("gregtech:" + (GT_Config.troll ? "troll" : this.getUnlocalizedName() + "/" + i));
                 }
             }
@@ -299,7 +301,7 @@ public class BW_Meta_Items {
         @Override
         public IIcon getIconFromDamage(int i) {
             if (this.mEnabledItems.get(i))
-                return (IIcon) BW_Util.get2DCoordFrom1DArray(i,0,2,this.mIconList);
+                return (IIcon) get2DCoordFrom1DArray(i,0,2,this.mIconList);
             return null;
         }
 

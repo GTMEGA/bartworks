@@ -29,6 +29,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getByteFromRarity;
+
 public class BioData {
     public static final ArrayList<BioData> BIO_DATA_ARRAY_LIST = new ArrayList<>();
 
@@ -84,7 +86,7 @@ public class BioData {
 
     public static NBTTagCompound getNBTTagFromBioData(BioData bioData) {
         NBTTagCompound ret = new NBTTagCompound();
-        ret.setByte("Rarity", BW_Util.getByteFromRarity(bioData.rarity));
+        ret.setByte("Rarity", getByteFromRarity(bioData.rarity));
         ret.setString("Name", bioData.name);
         //ret.setInteger("ID", bioData.ID); buggy when load Order changes
         ret.setInteger("Chance", bioData.chance);
@@ -119,7 +121,7 @@ public class BioData {
 
     @Override
     public int hashCode() {
-        return MurmurHash3.murmurhash3_x86_32(ByteBuffer.allocate(13).putInt(MurmurHash3.murmurhash3_x86_32(this.getName(), 0, this.getName().length(), 31)).put(BW_Util.getByteFromRarity(this.getRarity())).putInt(this.getChance()).putInt(this.getTier()).array(), 0, 13, 31);
+        return MurmurHash3.murmurhash3_x86_32(ByteBuffer.allocate(13).putInt(MurmurHash3.murmurhash3_x86_32(this.getName(), 0, this.getName().length(), 31)).put(getByteFromRarity(this.getRarity())).putInt(this.getChance()).putInt(this.getTier()).array(), 0, 13, 31);
     }
 
     public int getTier() {

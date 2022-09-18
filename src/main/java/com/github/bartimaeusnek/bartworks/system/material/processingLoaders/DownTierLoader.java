@@ -22,13 +22,14 @@
 
 package com.github.bartimaeusnek.bartworks.system.material.processingLoaders;
 
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.StreamUtils;
 import gregtech.api.util.GT_Recipe;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.copyAndSetTierToNewRecipe;
 
 public class DownTierLoader {
 
@@ -42,7 +43,7 @@ public class DownTierLoader {
                             .filter(recipe -> Objects.nonNull(recipe) && recipe.mEUt > 128)
                             .forEach(recipe -> {
                                 toRem.add(recipe);
-                                newRecipes.add(BW_Util.copyAndSetTierToNewRecipe(recipe, (byte) 2));
+                                newRecipes.add(copyAndSetTierToNewRecipe(recipe, (byte) 2));
                             });
                     map.mRecipeList.removeAll(toRem);
                     map.mRecipeList.addAll(newRecipes);

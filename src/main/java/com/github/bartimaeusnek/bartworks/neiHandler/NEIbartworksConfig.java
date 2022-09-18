@@ -27,10 +27,12 @@ import codechicken.nei.api.IConfigureNEI;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.common.loaders.FluidLoader;
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.OrePrefixes;
 import net.minecraft.item.ItemStack;
+
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.Bismutite;
+import static com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader.getCorrespondingItemStack;
 
 
 @Optional.Interface(iface = "codechicken.nei.api.API", modid = "NotEnoughItems")
@@ -55,25 +57,25 @@ public class NEIbartworksConfig implements IConfigureNEI {
         API.hideItem(new ItemStack(FluidLoader.bioFluidBlock));
         API.hideItem(new ItemStack(ItemRegistry.bw_fake_glasses));
         ItemStack[] prefixesToHide = {
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.dustTiny, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.dustSmall, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.crushed, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.crushedPurified, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.crushedCentrifuged, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.nugget, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.gemChipped, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.gemFlawed, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.gemFlawless, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.gemExquisite, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.dustImpure, WerkstoffLoader.Bismutite).copy(),
-                WerkstoffLoader.getCorrespondingItemStack(OrePrefixes.dustPure, WerkstoffLoader.Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.dustTiny, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.dustSmall, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.crushed, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.crushedPurified, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.crushedCentrifuged, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.nugget, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.gemChipped, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.gemFlawed, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.gemFlawless, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.gemExquisite, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.dustImpure, Bismutite).copy(),
+                getCorrespondingItemStack(OrePrefixes.dustPure, Bismutite).copy(),
         };
         for (ItemStack stack : prefixesToHide) {
             stack.setItemDamage(Short.MAX_VALUE);
             API.hideItem(stack);
         }
 //        for (int i = 0; i < Short.MAX_VALUE; i++) {
-//            API.addItemListEntry(new ItemStack(WerkstoffLoader.BWOres,1,i));
+//            API.addItemListEntry(new ItemStack(BWOres,1,i));
 //        }
     }
 }

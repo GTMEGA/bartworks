@@ -44,7 +44,7 @@ public class ServerJoinedPackage extends GT_Packet {
 
     @Override
     public byte getPacketID() {
-        return 4;
+        return 2;
     }
 
     @Override

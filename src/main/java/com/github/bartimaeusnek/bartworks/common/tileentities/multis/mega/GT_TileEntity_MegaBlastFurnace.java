@@ -26,7 +26,6 @@ import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
 import com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.MegaUtils;
 import com.github.bartimaeusnek.bartworks.util.Pair;
 import com.github.bartimaeusnek.crossmod.tectech.TecTechEnabledMulti;
@@ -60,13 +59,14 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getTierFromGlasMeta;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getnominalVoltage;
 import static com.github.bartimaeusnek.bartworks.util.RecipeFinderForParallel.getMultiOutput;
 import static com.github.bartimaeusnek.bartworks.util.RecipeFinderForParallel.handleParallelRecipe;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAdder;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static gregtech.api.enums.GT_Values.V;
 import static gregtech.api.util.GT_StructureUtility.*;
-import static gregtech.api.util.GT_StructureUtility.ofHatchAdderOptional;
 
 @Optional.Interface(iface = "com.github.bartimaeusnek.crossmod.tectech.TecTechEnabledMulti", modid = "tectech", striprefs = true)
 public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBlastFurnace implements TecTechEnabledMulti {
@@ -365,7 +365,7 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
         ItemStack[] tInputs = this.getStoredInputs().toArray(new ItemStack[0]);
 
         FluidStack[] tFluids = this.getStoredFluids().toArray(new FluidStack[0]);
-        long nominalV = LoaderReference.tectech ? TecTechUtils.getnominalVoltageTT(this) : BW_Util.getnominalVoltage(this);
+        long nominalV = LoaderReference.tectech ? TecTechUtils.getnominalVoltageTT(this) : getnominalVoltage(this);
 
         byte tTier = (byte) Math.max(1, Math.min(GT_Utility.getTier(nominalV), V.length - 1));
         GT_Recipe tRecipe;
@@ -457,7 +457,7 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
     private boolean addGlas(Block block, int meta) {
         if (block != ItemRegistry.bw_glasses[0])
             return false;
-        byte tier = BW_Util.getTierFromGlasMeta(meta);
+        byte tier = getTierFromGlasMeta(meta);
         if (glasTier > 0)
             return tier == glasTier;
         glasTier = tier;

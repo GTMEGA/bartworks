@@ -56,6 +56,10 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.github.bartimaeusnek.bartworks.util.BW_Util.calculateGlassTier;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.addBlockToMachine;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.areStacksEqualOrNull;
+
 public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
 
     public static final HashMap<Coords, Integer> staticColorMap = new HashMap<>();
@@ -196,7 +200,7 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
             if (gtRecipe == null)
                 return false;
 
-            if (!BW_Util.areStacksEqualOrNull((ItemStack) gtRecipe.mSpecialItems, itemStack))
+            if (!areStacksEqualOrNull((ItemStack) gtRecipe.mSpecialItems, itemStack))
                 return false;
 
             int[] conditions = GT_TileEntity_BioVat.specialValueUnpack(gtRecipe.mSpecialValue);
@@ -240,7 +244,7 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
             } else
                 return false;
 
-            BW_Util.calculateOverclockedNessMulti(gtRecipe.mEUt, gtRecipe.mDuration, 1, this.getMaxInputVoltage(), this);
+            BW_Werkstoff_Util.calculateOverclockedNessMulti(gtRecipe.mEUt, gtRecipe.mDuration, 1, this.getMaxInputVoltage(), this);
 
             if (this.mEUt > 0)
                 this.mEUt = -this.mEUt;
@@ -291,7 +295,7 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
                         if (y == 0 && xDir + x == 0 && zDir + z == 0)
                             continue;
                         if (!(this.addOutputToMachineList(tileEntity, GT_TileEntity_BioVat.MCASING_INDEX) || this.addRadiationInputToMachineList(tileEntity) || this.addInputToMachineList(tileEntity, GT_TileEntity_BioVat.MCASING_INDEX) || this.addMaintenanceToMachineList(tileEntity, GT_TileEntity_BioVat.MCASING_INDEX) || this.addEnergyInputToMachineList(tileEntity, GT_TileEntity_BioVat.MCASING_INDEX))) {
-                            if (BW_Util.addBlockToMachine(x, y, z, 2, aBaseMetaTileEntity, GregTech_API.sBlockCasings4, 1)) {
+                            if (addBlockToMachine(x, y, z, 2, aBaseMetaTileEntity, GregTech_API.sBlockCasings4, 1)) {
                                 ++blockcounter;
                                 continue;
                             }
@@ -299,13 +303,13 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
                         }
                     } else {
                         if (Math.abs(x) < 2 && Math.abs(z) != 2) {
-                            if (!(BW_Util.addBlockToMachine(x, y, z, 2, aBaseMetaTileEntity, Blocks.air) || (BW_Util.addBlockToMachine(x, y, z, 2, aBaseMetaTileEntity, FluidLoader.bioFluidBlock)))) {
+                            if (!(addBlockToMachine(x, y, z, 2, aBaseMetaTileEntity, Blocks.air) || (addBlockToMachine(x, y, z, 2, aBaseMetaTileEntity, FluidLoader.bioFluidBlock)))) {
                                 return false;
                             }
                         } else {
                             if (x == -2 && z == -2 && y == 1)
-                                this.mGlassTier = BW_Util.calculateGlassTier(aBaseMetaTileEntity.getBlockOffset(xDir + -2, y, zDir + z), aBaseMetaTileEntity.getMetaIDOffset(xDir + x, y, zDir + z));
-                            if (0 == this.mGlassTier || this.mGlassTier != BW_Util.calculateGlassTier(aBaseMetaTileEntity.getBlockOffset(xDir + x, y, zDir + z), aBaseMetaTileEntity.getMetaIDOffset(xDir + x, y, zDir + z))) {
+                                this.mGlassTier = calculateGlassTier(aBaseMetaTileEntity.getBlockOffset(xDir + -2, y, zDir + z), aBaseMetaTileEntity.getMetaIDOffset(xDir + x, y, zDir + z));
+                            if (0 == this.mGlassTier || this.mGlassTier != calculateGlassTier(aBaseMetaTileEntity.getBlockOffset(xDir + x, y, zDir + z), aBaseMetaTileEntity.getMetaIDOffset(xDir + x, y, zDir + z))) {
                                 return false;
                             }
                         }
@@ -456,7 +460,7 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
 
                 this.height = this.reCalculateHeight();
                 if (this.mFluid != null && this.height > 1 && this.reCalculateFluidAmmount() > 0) {
-                    if ((!(BW_Util.areStacksEqualOrNull(aStack, this.mStack))) || (this.needsVisualUpdate && this.getBaseMetaTileEntity().getTimer() % GT_TileEntity_BioVat.TIMERDIVIDER == 1)) {
+                    if ((!(areStacksEqualOrNull(aStack, this.mStack))) || (this.needsVisualUpdate && this.getBaseMetaTileEntity().getTimer() % GT_TileEntity_BioVat.TIMERDIVIDER == 1)) {
                         for (int x = -1; x < 2; x++) {
                             for (int y = 1; y < this.height; y++) {
                                 for (int z = -1; z < 2; z++) {

@@ -10,6 +10,7 @@ dependencies {
     compile("com.github.GTNewHorizons:TinkersConstruct:1.9.0-17-GTNH:dev")
 
     compile files("dependencies/TecTech-1.7.10-4.10.4-local-b6491dd.jar")
+    compile files("dependencies/werkstoff-1.7.10-575d58a.jar")
 
     compileOnly("com.github.GTNewHorizons:AppleCore:3.2.0:dev") {
         transitive = false

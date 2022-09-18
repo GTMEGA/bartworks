@@ -26,7 +26,6 @@ import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.BW_Meta_Items;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitImprintLoader;
 import com.github.bartimaeusnek.bartworks.util.BWRecipes;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -35,13 +34,15 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.implementations.*;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_EnhancedMultiBlockBase;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Input;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_InputBus;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_LanguageManager;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -49,9 +50,10 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import static com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference.ADDED_BY_BARTIMAEUSNEK_VIA_BARTWORKS;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getFluidsFromInputHatches;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getItemsFromInputBusses;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static gregtech.api.util.GT_StructureUtility.ofHatchAdder;
-import static gregtech.api.util.GT_StructureUtility.ofHatchAdderOptional;
 import static net.minecraft.util.StatCollector.translateToLocal;
 
 public class GT_TileEntity_CircuitAssemblyLine extends GT_MetaTileEntity_EnhancedMultiBlockBase<GT_TileEntity_CircuitAssemblyLine> {
@@ -173,7 +175,7 @@ public class GT_TileEntity_CircuitAssemblyLine extends GT_MetaTileEntity_Enhance
             if (!this.imprintMachine(itemStack))
                 return false;
 
-        if (this.bufferedRecipe != null && this.bufferedRecipe.isRecipeInputEqual(true,false, BW_Util.getFluidsFromInputHatches(this), BW_Util.getItemsFromInputBusses(this))) {
+        if (this.bufferedRecipe != null && this.bufferedRecipe.isRecipeInputEqual(true,false, getFluidsFromInputHatches(this), getItemsFromInputBusses(this))) {
             setRecipeStats();
             return true;
         }
@@ -192,7 +194,7 @@ public class GT_TileEntity_CircuitAssemblyLine extends GT_MetaTileEntity_Enhance
         }
 
         for (GT_Recipe recipe : this.GT_RECIPE_COLLECTION) {
-            if (recipe.isRecipeInputEqual(true,false, BW_Util.getFluidsFromInputHatches(this), BW_Util.getItemsFromInputBusses(this)))
+            if (recipe.isRecipeInputEqual(true,false, getFluidsFromInputHatches(this), getItemsFromInputBusses(this)))
                 this.bufferedRecipe = recipe;
             else
                 continue;

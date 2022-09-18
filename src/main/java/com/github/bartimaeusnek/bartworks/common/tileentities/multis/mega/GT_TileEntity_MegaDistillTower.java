@@ -23,7 +23,10 @@
 package com.github.bartimaeusnek.bartworks.common.tileentities.multis.mega;
 
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
-import com.github.bartimaeusnek.bartworks.util.*;
+import com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference;
+import com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util;
+import com.github.bartimaeusnek.bartworks.util.MegaUtils;
+import com.github.bartimaeusnek.bartworks.util.Pair;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
@@ -44,6 +47,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getnominalVoltage;
 import static com.github.bartimaeusnek.bartworks.util.RecipeFinderForParallel.getMultiOutput;
 import static com.github.bartimaeusnek.bartworks.util.RecipeFinderForParallel.handleParallelRecipe;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
@@ -224,7 +228,7 @@ public class GT_TileEntity_MegaDistillTower extends GT_MetaTileEntity_Distillati
         long tVoltage = this.getMaxInputVoltage();
         byte tTier = (byte) Math.max(0, Math.min(GT_Utility.getTier(tVoltage), V.length - 1));
 
-        long nominalV = BW_Util.getnominalVoltage(this);
+        long nominalV = getnominalVoltage(this);
         FluidStack[] tFluids = tFluidList.toArray(new FluidStack[0]);
         if (tFluids.length > 0) {
             for (FluidStack tFluid : tFluids) {
@@ -256,9 +260,9 @@ public class GT_TileEntity_MegaDistillTower extends GT_MetaTileEntity_Distillati
                         actualEUT = actualEUT / 2;
                         divider++;
                     }
-                    BW_Util.calculateOverclockedNessMulti((int) (actualEUT / (divider * 2)), tRecipe.mDuration * (divider * 2), 1, nominalV, this);
+                    BW_Werkstoff_Util.calculateOverclockedNessMulti((int) (actualEUT / (divider * 2)), tRecipe.mDuration * (divider * 2), 1, nominalV, this);
                 } else
-                    BW_Util.calculateOverclockedNessMulti((int) actualEUT, tRecipe.mDuration, 1, nominalV, this);
+                    BW_Werkstoff_Util.calculateOverclockedNessMulti((int) actualEUT, tRecipe.mDuration, 1, nominalV, this);
                 //In case recipe is too OP for that machine
                 if (this.mMaxProgresstime == Integer.MAX_VALUE - 1 && this.mEUt == Integer.MAX_VALUE - 1)
                     return false;

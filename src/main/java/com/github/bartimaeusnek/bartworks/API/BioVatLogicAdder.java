@@ -24,7 +24,6 @@ package com.github.bartimaeusnek.bartworks.API;
 
 import com.github.bartimaeusnek.bartworks.system.material.BW_NonMeta_MaterialItems;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
-import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -38,6 +37,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.Tiberium;
 import static cpw.mods.fml.common.registry.GameRegistry.findBlock;
 
 @SuppressWarnings("ALL")
@@ -63,9 +63,9 @@ public final class BioVatLogicAdder {
             giveItemStackRadioHatchAbilites(ItemList.Uraniumcell_2.get(1), Materials.Uranium, 6);
             giveItemStackRadioHatchAbilites(ItemList.Uraniumcell_4.get(1), Materials.Uranium, 12);
 
-            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.TiberiumCell_1.get(1), WerkstoffLoader.Tiberium.getBridgeMaterial(), 3);
-            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.TiberiumCell_2.get(1), WerkstoffLoader.Tiberium.getBridgeMaterial(), 6);
-            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.TiberiumCell_4.get(1), WerkstoffLoader.Tiberium.getBridgeMaterial(), 12);
+            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.TiberiumCell_1.get(1), Tiberium.getBridgeMaterial(), 3);
+            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.TiberiumCell_2.get(1), Tiberium.getBridgeMaterial(), 6);
+            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.TiberiumCell_4.get(1), Tiberium.getBridgeMaterial(), 12);
 
             giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.TheCoreCell.get(1), Materials.Naquadah, 96);
 
@@ -85,9 +85,9 @@ public final class BioVatLogicAdder {
             giveItemStackRadioHatchAbilites(GT_ModHandler.getModItem("IC2","reactorUraniumDualdepleted",1), Materials.Uranium, 6, 10);
             giveItemStackRadioHatchAbilites(GT_ModHandler.getModItem("IC2","reactorUraniumQuaddepleted",1), Materials.Uranium, 12, 10);
 
-            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.Depleted_Tiberium_1.get(1), WerkstoffLoader.Tiberium.getBridgeMaterial(), 3, 10);
-            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.Depleted_Tiberium_2.get(1), WerkstoffLoader.Tiberium.getBridgeMaterial(), 6, 10);
-            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.Depleted_Tiberium_4.get(1), WerkstoffLoader.Tiberium.getBridgeMaterial(), 12, 10);
+            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.Depleted_Tiberium_1.get(1), Tiberium.getBridgeMaterial(), 3, 10);
+            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.Depleted_Tiberium_2.get(1), Tiberium.getBridgeMaterial(), 6, 10);
+            giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.Depleted_Tiberium_4.get(1), Tiberium.getBridgeMaterial(), 12, 10);
 
             giveItemStackRadioHatchAbilites(BW_NonMeta_MaterialItems.Depleted_TheCoreCell.get(1), Materials.Naquadah, 96, 10);
 

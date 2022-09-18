@@ -23,6 +23,7 @@
 package com.github.bartimaeusnek.bartworks.util;
 
 import com.github.bartimaeusnek.bartworks.common.loaders.BioItemList;
+import com.github.bartimaeusnek.bartworks.util.BWBasicRecipes.DynamicGTRecipe;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.Materials;
@@ -44,7 +45,8 @@ import javax.annotation.Nonnegative;
 import java.util.*;
 
 import static com.github.bartimaeusnek.bartworks.util.BW_Util.calculateSv;
-import static com.github.bartimaeusnek.bartworks.util.BW_Util.specialToByte;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.areStacksEqualOrNull;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.specialToByte;
 
 public class BWRecipes {
 
@@ -239,14 +241,6 @@ public class BWRecipes {
         return sBacteriaVat.addRecipe(new BacteriaVatRecipe(true, aInputs, null, BioItemList.getPetriDish(aCulture), new int[]{}, aFluidInputs, aFluidOutputs, aDuration, aEUt, aSievert)) != null;
     }
 
-    public static class DynamicGTRecipe extends GT_Recipe {
-
-        public DynamicGTRecipe(boolean aOptimize, ItemStack[] aInputs, ItemStack[] aOutputs, Object aSpecialItems, int[] aChances, FluidStack[] aFluidInputs, FluidStack[] aFluidOutputs, int aDuration, int aEUt, int aSpecialValue) {
-            super(aOptimize, aInputs, aOutputs, aSpecialItems, aChances, aFluidInputs, aFluidOutputs, aDuration, aEUt, aSpecialValue);
-        }
-
-    }
-
     public static class BW_Recipe_Map_LiquidFuel extends GT_Recipe.GT_Recipe_Map_Fuel {
 
         public BW_Recipe_Map_LiquidFuel(Collection<GT_Recipe> aRecipeList, String aUnlocalizedName, String aLocalName, String aNEIName, String aNEIGUIPath, int aUsualInputCount, int aUsualOutputCount, int aMinimalInputItems, int aMinimalInputFluids, int aAmperage, String aNEISpecialValuePre, int aNEISpecialValueMultiplier, String aNEISpecialValuePost, boolean aShowVoltageAmperageInNEI, boolean aNEIAllowed) {
@@ -289,7 +283,7 @@ public class BWRecipes {
             if (aRecipe.mFluidInputs.length < this.mMinimalInputFluids && aRecipe.mInputs.length < this.mMinimalInputItems) {
                 return null;
             } else {
-                return aCheckForCollisions && isthere != null && BW_Util.areStacksEqualOrNull((ItemStack) isthere.mSpecialItems, (ItemStack) aRecipe.mSpecialItems) ? null : this.add(aRecipe);
+                return aCheckForCollisions && isthere != null && areStacksEqualOrNull((ItemStack) isthere.mSpecialItems, (ItemStack) aRecipe.mSpecialItems) ? null : this.add(aRecipe);
             }
         }
 
@@ -372,7 +366,7 @@ public class BWRecipes {
 
             // Check the Recipe which has been used last time in order to not have to search for it again, if possible.
             if (aRecipe != null)
-                if (!aRecipe.mFakeRecipe && aRecipe.mCanBeBuffered && aRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && BW_Util.areStacksEqualOrNull((ItemStack) aRecipe.mSpecialItems, aSpecialSlot))
+                if (!aRecipe.mFakeRecipe && aRecipe.mCanBeBuffered && aRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && areStacksEqualOrNull((ItemStack) aRecipe.mSpecialItems, aSpecialSlot))
                     return aRecipe.mEnabled && aVoltage * mAmperage >= aRecipe.mEUt ? aRecipe : null;
 
             // Now look for the Recipes inside the Item HashMaps, but only when the Recipes usually have Items.
@@ -382,12 +376,12 @@ public class BWRecipes {
                         Collection<GT_Recipe> tRecipes = mRecipeItemMap.get(new GT_ItemStack(tStack));
                         if (tRecipes != null)
                             for (GT_Recipe tRecipe : tRecipes)
-                                if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && BW_Util.areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot))
+                                if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot))
                                     return tRecipe.mEnabled && aVoltage * mAmperage >= tRecipe.mEUt ? tRecipe : null;
                         tRecipes = mRecipeItemMap.get(new GT_ItemStack(GT_Utility.copyMetaData(GT_Values.W, tStack)));
                         if (tRecipes != null)
                             for (GT_Recipe tRecipe : tRecipes)
-                                if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && BW_Util.areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot))
+                                if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot))
                                     return tRecipe.mEnabled && aVoltage * mAmperage >= tRecipe.mEUt ? tRecipe : null;
                     }
 
@@ -397,7 +391,7 @@ public class BWRecipes {
                     if (aFluid != null) {
                         Collection<GT_Recipe> tRecipes = mRecipeFluidMap.get(aFluid.getFluid());
                         if (tRecipes != null) for (GT_Recipe tRecipe : tRecipes)
-                            if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && BW_Util.areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot))
+                            if (!tRecipe.mFakeRecipe && tRecipe.isRecipeInputEqual(false, aDontCheckStackSizes, aFluids, aInputs) && areStacksEqualOrNull((ItemStack) tRecipe.mSpecialItems, aSpecialSlot))
                                 return tRecipe.mEnabled && aVoltage * mAmperage >= tRecipe.mEUt ? tRecipe : null;
                     }
 
@@ -451,7 +445,7 @@ public class BWRecipes {
                 for (int y = 0; y < 3; y++) {
                     ItemStack toCheck = p_77569_1_.getStackInRowAndColumn(y,x);
                     ItemStack ref = this.charToStackMap.get(this.shape[x].toCharArray()[y]);
-                    if (!BW_Util.areStacksEqualOrNull(toCheck,ref))
+                    if (!areStacksEqualOrNull(toCheck,ref))
                         return false;
                 }
             }

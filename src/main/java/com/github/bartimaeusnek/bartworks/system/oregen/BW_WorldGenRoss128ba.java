@@ -28,7 +28,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import static com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader.*;
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.*;
 import static com.github.bartimaeusnek.crossmod.galacticraft.GalacticraftProxy.uo_dimensionList;
 import static gregtech.api.enums.Materials.*;
 

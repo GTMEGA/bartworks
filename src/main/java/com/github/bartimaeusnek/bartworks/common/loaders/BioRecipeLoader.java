@@ -28,7 +28,6 @@ import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEnti
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.GT_MetaTileEntity_BioLab;
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.GT_MetaTileEntity_RadioHatch;
 import com.github.bartimaeusnek.bartworks.util.BWRecipes;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -45,8 +44,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.*;
 
 public class BioRecipeLoader {
 
@@ -138,19 +138,19 @@ public class BioRecipeLoader {
         List<ItemStack> oreCropVine = OreDictionary.getOres("cropVine", false);
         if (LoaderReference.croploadcore && !oreCropVine.isEmpty())
             for (ItemStack stack : oreCropVine) {
-                GT_Values.RA.addExtractorRecipe(BW_Util.setStackSize(stack, 12), BioItemList.getOther(1), 500, BW_Util.getMachineVoltageFromTier(3));
+                GT_Values.RA.addExtractorRecipe(setStackSize(stack, 12), BioItemList.getOther(1), 500, getMachineVoltageFromTier(3));
             }
         else
-            GT_Values.RA.addExtractorRecipe(new ItemStack(Blocks.vine, 12), BioItemList.getOther(1), 500, BW_Util.getMachineVoltageFromTier(3));
+            GT_Values.RA.addExtractorRecipe(new ItemStack(Blocks.vine, 12), BioItemList.getOther(1), 500, getMachineVoltageFromTier(3));
 
-        GT_Values.RA.addExtractorRecipe(ItemList.Circuit_Chip_Stemcell.get(1L), BioItemList.getOther(4), 500, BW_Util.getMachineVoltageFromTier(6));
+        GT_Values.RA.addExtractorRecipe(ItemList.Circuit_Chip_Stemcell.get(1L), BioItemList.getOther(4), 500, getMachineVoltageFromTier(6));
 
         FluidStack dnaFluid = LoaderReference.gendustry ? FluidRegistry.getFluidStack("liquiddna", 1000) : Materials.Biomass.getFluid(1000L);
-        GT_Values.RA.addMixerRecipe(GT_Utility.getIntegratedCircuit(17), GT_OreDictUnificator.get(OrePrefixes.cell, Materials.Radon, 1L), null, null, dnaFluid, new FluidStack(FluidLoader.BioLabFluidMaterials[0], 2000), Materials.Empty.getCells(1), 500, BW_Util.getMachineVoltageFromTier(3));
+        GT_Values.RA.addMixerRecipe(GT_Utility.getIntegratedCircuit(17), GT_OreDictUnificator.get(OrePrefixes.cell, Materials.Radon, 1L), null, null, dnaFluid, new FluidStack(FluidLoader.BioLabFluidMaterials[0], 2000), Materials.Empty.getCells(1), 500, getMachineVoltageFromTier(3));
 
-        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(17), null, new FluidStack(BioCultureLoader.eColi.getFluid(), 1000), new FluidStack(FluidLoader.BioLabFluidMaterials[1], 10), BioItemList.getOther(4), null, null, null, null, null, new int[]{1000}, 60 * 20, BW_Util.getMachineVoltageFromTier(3));
-        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(17), null, new FluidStack(FluidLoader.BioLabFluidMaterials[1], 1000), new FluidStack(FluidLoader.BioLabFluidMaterials[3], 250), null, null, null, null, null, null, null, 60 * 20, BW_Util.getMachineVoltageFromTier(3));
-        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(17), null, new FluidStack(BioCultureLoader.CommonYeast.getFluid(), 1000), new FluidStack(FluidLoader.BioLabFluidMaterials[2], 10), null, null, null, null, null, null, null, 60 * 20, BW_Util.getMachineVoltageFromTier(3));
+        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(17), null, new FluidStack(BioCultureLoader.eColi.getFluid(), 1000), new FluidStack(FluidLoader.BioLabFluidMaterials[1], 10), BioItemList.getOther(4), null, null, null, null, null, new int[]{1000}, 60 * 20, getMachineVoltageFromTier(3));
+        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(17), null, new FluidStack(FluidLoader.BioLabFluidMaterials[1], 1000), new FluidStack(FluidLoader.BioLabFluidMaterials[3], 250), null, null, null, null, null, null, null, 60 * 20, getMachineVoltageFromTier(3));
+        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(17), null, new FluidStack(BioCultureLoader.CommonYeast.getFluid(), 1000), new FluidStack(FluidLoader.BioLabFluidMaterials[2], 10), null, null, null, null, null, null, null, 60 * 20, getMachineVoltageFromTier(3));
 
 
         ItemStack[] Pistons = {ItemList.Electric_Piston_HV.get(1L), ItemList.Electric_Piston_EV.get(1L), ItemList.Electric_Piston_IV.get(1L), ItemList.Electric_Piston_LuV.get(1L), ItemList.Electric_Piston_ZPM.get(1L), ItemList.Electric_Piston_UV.get(1L)};
@@ -221,7 +221,7 @@ public class BioRecipeLoader {
                     BioItemList.getPetriDish(null),
                     10000,
                     100,
-                    BW_Util.getMachineVoltageFromTier(1)
+                    getMachineVoltageFromTier(1)
             );
 
             GT_Values.RA.addAutoclaveRecipe(
@@ -230,7 +230,7 @@ public class BioRecipeLoader {
                     BioItemList.getDNASampleFlask(null),
                     10000,
                     100,
-                    BW_Util.getMachineVoltageFromTier(1)
+                    getMachineVoltageFromTier(1)
             );
         }
 
@@ -239,7 +239,7 @@ public class BioRecipeLoader {
                 GT_Utility.getIntegratedCircuit(17),
                 BioItemList.getPlasmidCell(null),
                 100,
-                BW_Util.getMachineVoltageFromTier(1)
+                getMachineVoltageFromTier(1)
 
         );
 
@@ -253,8 +253,8 @@ public class BioRecipeLoader {
                     new int[]{3300},
                     new FluidStack[]{fluidStack},
                     500,
-                    BW_Util.getMachineVoltageFromTier(3),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(3),
+                    STANDART
             );
 
             BWRecipes.instance.addBioLabRecipeIncubation(
@@ -263,8 +263,8 @@ public class BioRecipeLoader {
                     new int[]{4500},
                     new FluidStack[]{fluidStack},
                     500,
-                    BW_Util.getMachineVoltageFromTier(3),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(3),
+                    STANDART
             );
 
             BWRecipes.instance.addBioLabRecipeIncubation(
@@ -273,8 +273,8 @@ public class BioRecipeLoader {
                     new int[]{7500},
                     new FluidStack[]{fluidStack},
                     500,
-                    BW_Util.getMachineVoltageFromTier(3),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(3),
+                    STANDART
             );
 
             BWRecipes.instance.addBioLabRecipeIncubation(
@@ -283,8 +283,8 @@ public class BioRecipeLoader {
                     new int[]{2500},
                     new FluidStack[]{fluidStack},
                     500,
-                    BW_Util.getMachineVoltageFromTier(3),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(3),
+                    STANDART
             );
 
             BWRecipes.instance.addBioLabRecipeIncubation(
@@ -293,8 +293,8 @@ public class BioRecipeLoader {
                     new int[]{3300},
                     new FluidStack[]{fluidStack},
                     500,
-                    BW_Util.getMachineVoltageFromTier(3),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(3),
+                    STANDART
             );
 
             BWRecipes.instance.addBioLabRecipeIncubation(
@@ -303,8 +303,8 @@ public class BioRecipeLoader {
                     new int[]{2500},
                     new FluidStack[]{fluidStack},
                     500,
-                    BW_Util.getMachineVoltageFromTier(3),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(3),
+                    STANDART
             );
 
             BWRecipes.instance.addBioLabRecipeIncubation(
@@ -313,8 +313,8 @@ public class BioRecipeLoader {
                     new int[]{3300},
                     new FluidStack[]{fluidStack},
                     500,
-                    BW_Util.getMachineVoltageFromTier(3),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(3),
+                    STANDART
             );
 
             BWRecipes.instance.addBioLabRecipeIncubation(
@@ -323,8 +323,8 @@ public class BioRecipeLoader {
                     new int[]{100},
                     new FluidStack[]{fluidStack},
                     1500,
-                    BW_Util.getMachineVoltageFromTier(4),
-                    BW_Util.STANDART
+                    getMachineVoltageFromTier(4),
+                    STANDART
             );
 
             BWRecipes.instance.addBacterialVatRecipe(
@@ -333,7 +333,7 @@ public class BioRecipeLoader {
                     BioCultureLoader.CommonYeast,
                     new FluidStack[]{(LoaderReference.berriespp ? FluidRegistry.getFluidStack("potion.ghp", 1) : Materials.Ethanol.getFluid(1L))},
                     350,
-                    BW_Util.getMachineVoltageFromTier(4)
+                    getMachineVoltageFromTier(4)
             );
 
             BWRecipes.instance.addBacterialVatRecipe(
@@ -342,7 +342,7 @@ public class BioRecipeLoader {
                     BioCultureLoader.WhineYeast,
                     new FluidStack[]{FluidRegistry.getFluidStack("potion.wine", 12)},
                     200,
-                    BW_Util.getMachineVoltageFromTier(2)
+                    getMachineVoltageFromTier(2)
             );
 
             BWRecipes.instance.addBacterialVatRecipe(
@@ -351,7 +351,7 @@ public class BioRecipeLoader {
                     BioCultureLoader.BeerYeast,
                     new FluidStack[]{FluidRegistry.getFluidStack("potion.beer", 5)},
                     600,
-                    BW_Util.getMachineVoltageFromTier(1)
+                    getMachineVoltageFromTier(1)
             );
             BWRecipes.instance.addBacterialVatRecipe(
                     new ItemStack[]{ItemList.IC2_Hops.get(32L), GT_OreDictUnificator.get(OrePrefixes.dust, Materials.Wheat, 16L)},
@@ -359,7 +359,7 @@ public class BioRecipeLoader {
                     BioCultureLoader.BeerYeast,
                     new FluidStack[]{FluidRegistry.getFluidStack("potion.darkbeer", 10)},
                     600,
-                    BW_Util.getMachineVoltageFromTier(1)
+                    getMachineVoltageFromTier(1)
             );
 
         }
@@ -370,7 +370,7 @@ public class BioRecipeLoader {
                 BioCultureLoader.WhineYeast,
                 new FluidStack[]{FluidRegistry.getFluidStack("potion.wine", 12)},
                 400,
-                BW_Util.getMachineVoltageFromTier(1)
+                getMachineVoltageFromTier(1)
         );
 
         BWRecipes.instance.addBacterialVatRecipe(
@@ -379,11 +379,11 @@ public class BioRecipeLoader {
                 BioCultureLoader.anaerobicOil,
                 new FluidStack[]{new FluidStack(FluidLoader.fulvicAcid,1000)},
                 2748,
-                BW_Util.getMachineVoltageFromTier(3)
+                getMachineVoltageFromTier(3)
         );
-        GT_Values.RA.addFluidHeaterRecipe(GT_Utility.getIntegratedCircuit(10),new FluidStack(FluidLoader.fulvicAcid,1000),new FluidStack(FluidLoader.heatedfulvicAcid,1000),90, BW_Util.getMachineVoltageFromTier(2));
-        GT_Values.RA.addChemicalRecipe(GT_Utility.getIntegratedCircuit(10),null,new FluidStack(FluidLoader.heatedfulvicAcid,1000),new FluidStack(FluidLoader.Kerogen,1000),null,75, BW_Util.getMachineVoltageFromTier(2));
-        GT_Values.RA.addPyrolyseRecipe(Materials.Wood.getDust(10),new FluidStack(FluidLoader.Kerogen,1000),10,null,Materials.Oil.getFluid(1000),105, BW_Util.getMachineVoltageFromTier(3));
+        GT_Values.RA.addFluidHeaterRecipe(GT_Utility.getIntegratedCircuit(10),new FluidStack(FluidLoader.fulvicAcid,1000),new FluidStack(FluidLoader.heatedfulvicAcid,1000),90, getMachineVoltageFromTier(2));
+        GT_Values.RA.addChemicalRecipe(GT_Utility.getIntegratedCircuit(10),null,new FluidStack(FluidLoader.heatedfulvicAcid,1000),new FluidStack(FluidLoader.Kerogen,1000),null,75, getMachineVoltageFromTier(2));
+        GT_Values.RA.addPyrolyseRecipe(Materials.Wood.getDust(10),new FluidStack(FluidLoader.Kerogen,1000),10,null,Materials.Oil.getFluid(1000),105, getMachineVoltageFromTier(3));
     }
 
     public static void runOnServerStarted(){

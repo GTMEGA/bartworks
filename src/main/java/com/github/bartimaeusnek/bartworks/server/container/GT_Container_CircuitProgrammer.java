@@ -25,7 +25,6 @@ package com.github.bartimaeusnek.bartworks.server.container;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.common.items.Circuit_Programmer;
 import com.github.bartimaeusnek.bartworks.common.net.CircuitProgrammerPacket;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.gui.GT_Slot_Holo;
@@ -40,6 +39,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeHooks;
+
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.checkStackAndPrefix;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.setStackSize;
 
 public class GT_Container_CircuitProgrammer extends Container {
 
@@ -163,7 +165,7 @@ public class GT_Container_CircuitProgrammer extends Container {
         @Override
         public void setInventorySlotContents(int slotNR, ItemStack itemStack) {
             if (itemStack != null && itemStack.getItem() != null && itemStack.getItem().equals(GT_Utility.getIntegratedCircuit(0).getItem())) {
-                this.Slot = BW_Util.setStackSize(itemStack.copy(),1);
+                this.Slot = setStackSize(itemStack.copy(),1);
                 itemStack.stackSize--;
                 this.tag = this.toBind.getTagCompound();
                 this.tag.setBoolean("HasChip", true);
@@ -172,7 +174,7 @@ public class GT_Container_CircuitProgrammer extends Container {
                 this.Player.inventory.setInventorySlotContents(this.Player.inventory.currentItem, this.toBind);
                 if (!this.Player.isClientWorld())
                     MainMod.BW_Network_instance.sendToServer(new CircuitProgrammerPacket(this.Player.worldObj.provider.dimensionId, this.Player.getEntityId(), true, (byte) itemStack.getItemDamage()));
-            } else if (BW_Util.checkStackAndPrefix(itemStack) && GT_OreDictUnificator.getAssociation(itemStack).mPrefix.equals(OrePrefixes.circuit) && GT_OreDictUnificator.getAssociation(itemStack).mMaterial.mMaterial.equals(Materials.Basic)) {
+            } else if (checkStackAndPrefix(itemStack) && GT_OreDictUnificator.getAssociation(itemStack).mPrefix.equals(OrePrefixes.circuit) && GT_OreDictUnificator.getAssociation(itemStack).mMaterial.mMaterial.equals(Materials.Basic)) {
                 this.Slot = GT_Utility.getIntegratedCircuit(0);
                 this.Slot.stackSize = 1;
                 itemStack.stackSize--;

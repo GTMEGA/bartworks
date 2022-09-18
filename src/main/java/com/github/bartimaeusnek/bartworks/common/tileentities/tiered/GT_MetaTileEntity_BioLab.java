@@ -49,6 +49,8 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getMachineVoltageFromTier;
+
 public class GT_MetaTileEntity_BioLab extends GT_MetaTileEntity_BasicMachine {
 
     private static final String MGUINAME = "BW.GUI.BioLab.png";
@@ -121,7 +123,7 @@ public class GT_MetaTileEntity_BioLab extends GT_MetaTileEntity_BasicMachine {
                             this.mOutputItems[0] = BioItemList.getDNASampleFlask(BioDNA.convertDataToDNA(cultureDNABioData));
                         }
                         this.mOutputItems[1] = GT_OreDictUnificator.get(OrePrefixes.cell, Materials.Empty, 1L);
-                        this.calculateOverclockedNess(BW_Util.getMachineVoltageFromTier(rTier + cultureDNABioData.getTier()), 500);
+                        this.calculateOverclockedNess(getMachineVoltageFromTier(rTier + cultureDNABioData.getTier()), 500);
 
                         return GT_MetaTileEntity_BasicMachine.FOUND_AND_SUCCESSFULLY_USED_RECIPE;
                     }
@@ -159,7 +161,7 @@ public class GT_MetaTileEntity_BioLab extends GT_MetaTileEntity_BasicMachine {
                             this.mOutputItems[0] = ItemList.Tool_DataOrb.get(1L);
                         this.mOutputItems[1] = ItemList.Cell_Universal_Fluid.get(2L);
 
-                        this.calculateOverclockedNess(BW_Util.getMachineVoltageFromTier(1 + rTier + cultureDNABioData.getTier()), 500);
+                        this.calculateOverclockedNess(getMachineVoltageFromTier(1 + rTier + cultureDNABioData.getTier()), 500);
 
                         return GT_MetaTileEntity_BasicMachine.FOUND_AND_SUCCESSFULLY_USED_RECIPE;
 
@@ -191,7 +193,7 @@ public class GT_MetaTileEntity_BioLab extends GT_MetaTileEntity_BasicMachine {
                             this.mOutputItems[0] = BioItemList.getPlasmidCell(BioPlasmid.convertDataToPlasmid(cultureDNABioData));
                         }
                         this.mOutputItems[1] = ItemList.Cell_Universal_Fluid.get(1L);
-                        this.calculateOverclockedNess(BW_Util.getMachineVoltageFromTier(1 + rTier + cultureDNABioData.getTier()), 500);
+                        this.calculateOverclockedNess(getMachineVoltageFromTier(1 + rTier + cultureDNABioData.getTier()), 500);
                         return GT_MetaTileEntity_BasicMachine.FOUND_AND_SUCCESSFULLY_USED_RECIPE;
                     }
 
@@ -219,7 +221,7 @@ public class GT_MetaTileEntity_BioLab extends GT_MetaTileEntity_BasicMachine {
                             this.mOutputItems[0] = BioItemList.getPetriDish(bioCulture);
                         }
                         this.mOutputItems[1] = ItemList.Cell_Universal_Fluid.get(1L);
-                        this.calculateOverclockedNess(BW_Util.getMachineVoltageFromTier(3 + rTier + cultureDNABioData.getTier()), 500);
+                        this.calculateOverclockedNess(getMachineVoltageFromTier(3 + rTier + cultureDNABioData.getTier()), 500);
                         return GT_MetaTileEntity_BasicMachine.FOUND_AND_SUCCESSFULLY_USED_RECIPE;
                     }
                 }
@@ -253,7 +255,7 @@ public class GT_MetaTileEntity_BioLab extends GT_MetaTileEntity_BasicMachine {
                             out = out.setPlasmid(BioPlasmid.convertDataToPlasmid(cultureDNABioData));
                             this.mOutputItems[0] = BioItemList.getPetriDish(out);
                         }
-                        this.calculateOverclockedNess(BW_Util.getMachineVoltageFromTier(3 + rTier + cultureDNABioData.getTier()), 500);
+                        this.calculateOverclockedNess(getMachineVoltageFromTier(3 + rTier + cultureDNABioData.getTier()), 500);
                         return GT_MetaTileEntity_BasicMachine.FOUND_AND_SUCCESSFULLY_USED_RECIPE;
                     }
                 }

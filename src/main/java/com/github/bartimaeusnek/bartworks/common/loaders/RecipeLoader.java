@@ -30,8 +30,7 @@ import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEnti
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_Windmill;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
-import com.github.bartimaeusnek.bartworks.util.BWRecipes;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
+import com.github.bartimaeusnek.bartworks.util.BWBasicRecipes.DynamicGTRecipe;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.*;
 import gregtech.api.interfaces.ISubTagContainer;
@@ -49,6 +48,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import static com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler.newStuff;
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.*;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getMachineVoltageFromTier;
 
 public class RecipeLoader {
 
@@ -62,16 +63,16 @@ public class RecipeLoader {
              * GTNH "hardmode" Recipes
              */
 
-            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(Blocks.lapis_block), Materials.Iron.getMolten(1296L), new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 0), 100, BW_Util.getMachineVoltageFromTier(3));
-            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 0), Materials.Lapis.getPlates(9), GT_OreDictUnificator.get(OrePrefixes.circuit, Materials.Advanced, 2L), GT_Utility.getIntegratedCircuit(17)}, FluidRegistry.getFluidStack("ic2coolant", 1000), new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 1), 100, BW_Util.getMachineVoltageFromTier(3));
-            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 1), Materials.Lapis.getBlocks(8), GT_Utility.getIntegratedCircuit(17)}, GT_Values.NF, new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, BW_Util.getMachineVoltageFromTier(3));
+            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(Blocks.lapis_block), Materials.Iron.getMolten(1296L), new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 0), 100, getMachineVoltageFromTier(3));
+            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 0), Materials.Lapis.getPlates(9), GT_OreDictUnificator.get(OrePrefixes.circuit, Materials.Advanced, 2L), GT_Utility.getIntegratedCircuit(17)}, FluidRegistry.getFluidStack("ic2coolant", 1000), new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 1), 100, getMachineVoltageFromTier(3));
+            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 1), Materials.Lapis.getBlocks(8), GT_Utility.getIntegratedCircuit(17)}, GT_Values.NF, new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, getMachineVoltageFromTier(3));
         } else {
             /*
              * Vanilla Recipes
              */
 
 
-            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{Materials.Lapis.getBlocks(8), GT_OreDictUnificator.get(OrePrefixes.circuit, Materials.Basic, 1L), GT_Utility.getIntegratedCircuit(17)}, GT_Values.NF, new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, BW_Util.getMachineVoltageFromTier(1));
+            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{Materials.Lapis.getBlocks(8), GT_OreDictUnificator.get(OrePrefixes.circuit, Materials.Basic, 1L), GT_Utility.getIntegratedCircuit(17)}, GT_Values.NF, new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, getMachineVoltageFromTier(1));
 
             GT_ModHandler.addCraftingRecipe(
                     new ItemStack(ItemRegistry.BW_BLOCKS[1]),
@@ -84,9 +85,9 @@ public class RecipeLoader {
                             'C', "circuitBasic"
                     });
 
-            GT_Values.RA.addCutterRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[1]), new ItemStack(ItemRegistry.BW_BLOCKS[0], 9, 1), GT_Values.NI, 100, BW_Util.getMachineVoltageFromTier(1));
-            GT_Values.RA.addCompressorRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[0], 9, 1), new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, BW_Util.getMachineVoltageFromTier(1));
-            GT_Values.RA.addCompressorRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[0], 9, 0), new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, BW_Util.getMachineVoltageFromTier(1));
+            GT_Values.RA.addCutterRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[1]), new ItemStack(ItemRegistry.BW_BLOCKS[0], 9, 1), GT_Values.NI, 100, getMachineVoltageFromTier(1));
+            GT_Values.RA.addCompressorRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[0], 9, 1), new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, getMachineVoltageFromTier(1));
+            GT_Values.RA.addCompressorRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[0], 9, 0), new ItemStack(ItemRegistry.BW_BLOCKS[1]), 100, getMachineVoltageFromTier(1));
             GT_ModHandler.addShapelessCraftingRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 0), RecipeLoader.BITSD, new Object[]{new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 1)});
             GT_ModHandler.addShapelessCraftingRecipe(new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 1), RecipeLoader.BITSD, new Object[]{new ItemStack(ItemRegistry.BW_BLOCKS[0], 1, 0)});
         }
@@ -251,17 +252,17 @@ public class RecipeLoader {
                         new FluidStack[]{
                                 Materials.SolderingAlloy.getMolten(32 * 144),
                                 Materials.Polytetrafluoroethylene.getMolten(32 * 144)
-                        }, ItemRegistry.dehp, 5000, BW_Util.getMachineVoltageFromTier(6));
+                        }, ItemRegistry.dehp, 5000, getMachineVoltageFromTier(6));
 
-            GT_Values.RA.addAssemblerRecipe(GT_ModHandler.getModItem("gregtech", "gt.blockmachines", 64, 1000), GT_Utility.getIntegratedCircuit(17), Materials.SolderingAlloy.getMolten(9216), ItemRegistry.megaMachines[0], 72000, BW_Util.getMachineVoltageFromTier(3));
-            GT_Values.RA.addAssemblerRecipe(GT_ModHandler.getModItem("gregtech", "gt.blockmachines", 64, 1002), GT_Utility.getIntegratedCircuit(17), Materials.SolderingAlloy.getMolten(9216), ItemRegistry.megaMachines[1], 72000, BW_Util.getMachineVoltageFromTier(3));
-            GT_Values.RA.addAssemblerRecipe(GT_ModHandler.getModItem("gregtech", "gt.blockmachines", 64, 1126), GT_Utility.getIntegratedCircuit(17), Materials.SolderingAlloy.getMolten(9216), ItemRegistry.megaMachines[2], 72000, BW_Util.getMachineVoltageFromTier(3));
+            GT_Values.RA.addAssemblerRecipe(GT_ModHandler.getModItem("gregtech", "gt.blockmachines", 64, 1000), GT_Utility.getIntegratedCircuit(17), Materials.SolderingAlloy.getMolten(9216), ItemRegistry.megaMachines[0], 72000, getMachineVoltageFromTier(3));
+            GT_Values.RA.addAssemblerRecipe(GT_ModHandler.getModItem("gregtech", "gt.blockmachines", 64, 1002), GT_Utility.getIntegratedCircuit(17), Materials.SolderingAlloy.getMolten(9216), ItemRegistry.megaMachines[1], 72000, getMachineVoltageFromTier(3));
+            GT_Values.RA.addAssemblerRecipe(GT_ModHandler.getModItem("gregtech", "gt.blockmachines", 64, 1126), GT_Utility.getIntegratedCircuit(17), Materials.SolderingAlloy.getMolten(9216), ItemRegistry.megaMachines[2], 72000, getMachineVoltageFromTier(3));
 
-            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 0), Materials.Nickel.getMolten(5184), new ItemStack(ItemRegistry.bw_glasses[0], 1, 1), 800, BW_Util.getMachineVoltageFromTier(3));
-            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 1), Materials.Tungsten.getMolten(1296), new ItemStack(ItemRegistry.bw_glasses[0], 1, 2), 800, BW_Util.getMachineVoltageFromTier(4));
-            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 2), Materials.Chrome.getMolten(1296), new ItemStack(ItemRegistry.bw_glasses[0], 1, 3), 800, BW_Util.getMachineVoltageFromTier(5));
-            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 3), Materials.Iridium.getMolten(3888), new ItemStack(ItemRegistry.bw_glasses[0], 1, 4), 800, BW_Util.getMachineVoltageFromTier(6));
-            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 4), Materials.Osmium.getMolten(1296), new ItemStack(ItemRegistry.bw_glasses[0], 1, 5), 800, BW_Util.getMachineVoltageFromTier(7));
+            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 0), Materials.Nickel.getMolten(5184), new ItemStack(ItemRegistry.bw_glasses[0], 1, 1), 800, getMachineVoltageFromTier(3));
+            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 1), Materials.Tungsten.getMolten(1296), new ItemStack(ItemRegistry.bw_glasses[0], 1, 2), 800, getMachineVoltageFromTier(4));
+            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 2), Materials.Chrome.getMolten(1296), new ItemStack(ItemRegistry.bw_glasses[0], 1, 3), 800, getMachineVoltageFromTier(5));
+            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 3), Materials.Iridium.getMolten(3888), new ItemStack(ItemRegistry.bw_glasses[0], 1, 4), 800, getMachineVoltageFromTier(6));
+            GT_Values.RA.addFluidSolidifierRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 4), Materials.Osmium.getMolten(1296), new ItemStack(ItemRegistry.bw_glasses[0], 1, 5), 800, getMachineVoltageFromTier(7));
 
             for (int i = 0; i < Dyes.dyeBrown.getSizeOfFluidList(); ++i) {
                 GT_Values.RA.addChemicalBathRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 0), Dyes.dyeRed.getFluidDye(i, 36), new ItemStack(ItemRegistry.bw_glasses[0], 1, 6), null, null, null, 64, 2);
@@ -272,14 +273,14 @@ public class RecipeLoader {
                 GT_Values.RA.addChemicalBathRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 0), Dyes.dyeBrown.getFluidDye(i, 36), new ItemStack(ItemRegistry.bw_glasses[0], 1, 11), null, null, null, 64, 2);
             }
             //and reverse recipes... cause im nice :P
-            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 1), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nickel.getDust(36)}, null, 800, BW_Util.getMachineVoltageFromTier(3));
-            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 2), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nickel.getDust(36), Materials.Tungsten.getDust(9)}, null, 800, BW_Util.getMachineVoltageFromTier(5));
-            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 3), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nichrome.getDust(45), Materials.Tungsten.getDust(9)}, null, 800, BW_Util.getMachineVoltageFromTier(6));
-            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 4), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nichrome.getDust(45), Materials.Tungsten.getDust(9), Materials.Iridium.getDust(27)}, null, 800, BW_Util.getMachineVoltageFromTier(7));
-            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 5), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nichrome.getDust(45), Materials.Tungsten.getDust(9), Materials.Osmiridium.getDust(36)}, null, 800, BW_Util.getMachineVoltageFromTier(8));
+            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 1), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nickel.getDust(36)}, null, 800, getMachineVoltageFromTier(3));
+            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 2), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nickel.getDust(36), Materials.Tungsten.getDust(9)}, null, 800, getMachineVoltageFromTier(5));
+            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 3), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nichrome.getDust(45), Materials.Tungsten.getDust(9)}, null, 800, getMachineVoltageFromTier(6));
+            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 4), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nichrome.getDust(45), Materials.Tungsten.getDust(9), Materials.Iridium.getDust(27)}, null, 800, getMachineVoltageFromTier(7));
+            GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, 5), new ItemStack[]{Materials.BorosilicateGlass.getDust(9), Materials.Nichrome.getDust(45), Materials.Tungsten.getDust(9), Materials.Osmiridium.getDust(36)}, null, 800, getMachineVoltageFromTier(8));
 
             for (int i = 6; i < 11; i++) {
-                GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, i), new ItemStack[]{Materials.BorosilicateGlass.getDust(9)}, null, 400, BW_Util.getMachineVoltageFromTier(1));
+                GT_Values.RA.addPulveriserRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, i), new ItemStack[]{Materials.BorosilicateGlass.getDust(9)}, null, 400, getMachineVoltageFromTier(1));
                 GT_Values.RA.addChemicalBathRecipe(new ItemStack(ItemRegistry.bw_glasses[0], 1, i), Materials.Chlorine.getGas(50), new ItemStack(ItemRegistry.bw_glasses[0], 1, 0), null, null, null, 64, 2);
             }
 
@@ -297,7 +298,7 @@ public class RecipeLoader {
             );
 
             Materials[] cables = {Materials.Lead, Materials.Tin, Materials.AnnealedCopper, Materials.Gold, Materials.Aluminium, Materials.Tungsten, Materials.VanadiumGallium, Materials.Naquadah, Materials.NaquadahAlloy, Materials.Superconductor};
-            ISubTagContainer[] hulls = {Materials.WroughtIron, Materials.Steel, Materials.Aluminium, Materials.StainlessSteel, Materials.Titanium, Materials.TungstenSteel, WerkstoffLoader.LuVTierMaterial, Materials.Iridium, Materials.Osmium, Materials.Naquadah};
+            ISubTagContainer[] hulls = {Materials.WroughtIron, Materials.Steel, Materials.Aluminium, Materials.StainlessSteel, Materials.Titanium, Materials.TungstenSteel, LuVTierMaterial, Materials.Iridium, Materials.Osmium, Materials.Naquadah};
             ItemStack[] bats = {ItemList.Battery_Hull_LV.get(1L), ItemList.Battery_Hull_MV.get(1L), ItemList.Battery_Hull_HV.get(1L)};
             ItemStack[] chreac = {ItemList.Machine_MV_ChemicalReactor.get(1L), ItemList.Machine_HV_ChemicalReactor.get(1L), ItemList.Machine_EV_ChemicalReactor.get(1L)};
 
@@ -479,7 +480,7 @@ public class RecipeLoader {
                     Materials.Plastic.getMolten(1152L),
                     new ItemStack(ItemRegistry.BW_BLOCKS[2], 1, 1),
                     20,
-                    BW_Util.getMachineVoltageFromTier(3)
+                    getMachineVoltageFromTier(3)
             );
 
             GT_ModHandler.addCraftingRecipe(
@@ -496,7 +497,7 @@ public class RecipeLoader {
                     }
             );
 
-            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{GT_OreDictUnificator.get(OrePrefixes.circuit, Materials.Good, 1L), Materials.Aluminium.getPlates(1), ItemList.Circuit_Board_Plastic.get(1L), ItemList.Battery_RE_LV_Lithium.get(1L)}, Materials.SolderingAlloy.getMolten(288L), new ItemStack(ItemRegistry.CIRCUIT_PROGRAMMER), 600, BW_Util.getMachineVoltageFromTier(2));
+            GT_Values.RA.addAssemblerRecipe(new ItemStack[]{GT_OreDictUnificator.get(OrePrefixes.circuit, Materials.Good, 1L), Materials.Aluminium.getPlates(1), ItemList.Circuit_Board_Plastic.get(1L), ItemList.Battery_RE_LV_Lithium.get(1L)}, Materials.SolderingAlloy.getMolten(288L), new ItemStack(ItemRegistry.CIRCUIT_PROGRAMMER), 600, getMachineVoltageFromTier(2));
 
             GT_ModHandler.addCraftingRecipe(
                     new GT_TileEntity_Windmill(ConfigHandler.IDOffset + GT_Values.VN.length * 6 + 2, "bw.windmill", StatCollector.translateToLocal("tile.bw.windmill.name")).getStackForm(1L),
@@ -761,7 +762,7 @@ public class RecipeLoader {
             if (LoaderReference.galacticgreg) {
                 GT_Values.RA.addAssemblylineRecipe(
                         ItemList.OreDrill4.get(1L),
-                        BW_Util.getMachineVoltageFromTier(6),
+                        getMachineVoltageFromTier(6),
                         new Object[]{
                                 ItemList.OreDrill4.get(1L),
                                 GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Europium, 9L),
@@ -773,11 +774,11 @@ public class RecipeLoader {
                         },
                         new FluidStack[]{
                                 Materials.SolderingAlloy.getMolten(1440),
-                                WerkstoffLoader.Neon.getFluidOrGas(20000),
+                                Neon.getFluidOrGas(20000),
                         },
                         ItemRegistry.voidminer[0].copy(),
                         108000,
-                        BW_Util.getMachineVoltageFromTier(6)
+                        getMachineVoltageFromTier(6)
                 );
             }
 
@@ -785,7 +786,7 @@ public class RecipeLoader {
                 if (LoaderReference.galacticgreg) {
                     GT_Values.RA.addAssemblylineRecipe(
                             ItemRegistry.voidminer[0].copy(),
-                            BW_Util.getMachineVoltageFromTier(7),
+                            getMachineVoltageFromTier(7),
                             new Object[]{
                                     ItemRegistry.voidminer[0].copy(),
                                     GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.BlackPlutonium, 9L),
@@ -797,16 +798,16 @@ public class RecipeLoader {
                             },
                             new FluidStack[]{
                                     Materials.SolderingAlloy.getMolten(1440),
-                                    WerkstoffLoader.Krypton.getFluidOrGas(20000)
+                                    Krypton.getFluidOrGas(20000)
                             },
                             ItemRegistry.voidminer[1].copy(),
                             216000,
-                            BW_Util.getMachineVoltageFromTier(7)
+                            getMachineVoltageFromTier(7)
                     );
 
                     GT_Values.RA.addAssemblylineRecipe(
                             ItemRegistry.voidminer[1].copy(),
-                            BW_Util.getMachineVoltageFromTier(8),
+                            getMachineVoltageFromTier(8),
                             new Object[]{
                                     ItemRegistry.voidminer[1].copy(),
                                     GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9L),
@@ -818,11 +819,11 @@ public class RecipeLoader {
                             },
                             new FluidStack[]{
                                     Materials.SolderingAlloy.getMolten(1440),
-                                    WerkstoffLoader.Oganesson.getFluidOrGas(20000)
+                                    Oganesson.getFluidOrGas(20000)
                             },
                             ItemRegistry.voidminer[2].copy(),
                             432000,
-                            BW_Util.getMachineVoltageFromTier(8)
+                            getMachineVoltageFromTier(8)
                     );
                 }
                 GT_Values.RA.addAssemblylineRecipe(
@@ -842,7 +843,7 @@ public class RecipeLoader {
                         },
                         ItemRegistry.eic.copy(),
                         240000,
-                        BW_Util.getMachineVoltageFromTier(8)
+                        getMachineVoltageFromTier(8)
                 );
             } else {
                 ItemStack[][] converters = ItemRegistry.TecTechLaserAdditions[0];
@@ -874,12 +875,12 @@ public class RecipeLoader {
                         new ItemStack[]{
                                 ItemList.Circuit_Parts_GlassFiber.get(32),
                                 GT_OreDictUnificator.get(WerkstoffLoader.gtnhGT ? OrePrefixes.foil : OrePrefixes.plateDouble, Materials.Electrum, WerkstoffLoader.gtnhGT ? 8 : 1),
-                                WerkstoffLoader.CubicZirconia.get(OrePrefixes.gemExquisite, 2)
+                                CubicZirconia.get(OrePrefixes.gemExquisite, 2)
                         },
                         Materials.Polytetrafluoroethylene.getMolten(72),
                         new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), 1, ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
                         200,
-                        BW_Util.getMachineVoltageFromTier(4)
+                        getMachineVoltageFromTier(4)
                 );
 
                 for (int j = 0; j < 4; j++) {
@@ -891,7 +892,7 @@ public class RecipeLoader {
                         GT_Values.RA.addAssemblerRecipe(
                                 new ItemStack[]{
                                         new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), ((j + 1) * 16), ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
-                                        WerkstoffLoader.CubicZirconia.get(OrePrefixes.lens),
+                                        CubicZirconia.get(OrePrefixes.lens),
                                         GT_OreDictUnificator.get(prefixes[j], cables[i + 4], 8),
                                         emitters[i].get(2 * (j + 1)),
                                         sensors[i].get(2 * (j + 1)),
@@ -900,11 +901,11 @@ public class RecipeLoader {
                                 Materials.SolderingAlloy.getMolten(144 * i * (j + 1)),
                                 converter,
                                 200 * (j + 1),
-                                BW_Util.getMachineVoltageFromTier(4 + i));
+                                getMachineVoltageFromTier(4 + i));
                         GT_Values.RA.addAssemblerRecipe(
                                 new ItemStack[]{
                                         new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), ((j + 1) * 16), ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
-                                        WerkstoffLoader.CubicZirconia.get(OrePrefixes.lens),
+                                        CubicZirconia.get(OrePrefixes.lens),
                                         GT_OreDictUnificator.get(prefixes[j], cables[i + 4], 8),
                                         sensors[i].get(2 * (j + 1)),
                                         ItemList.HATCHES_ENERGY[4 + i].get(2 * (j + 1)),
@@ -912,11 +913,11 @@ public class RecipeLoader {
                                 Materials.SolderingAlloy.getMolten(144 * i * (j + 1)),
                                 eInput,
                                 200 * (j + 1),
-                                BW_Util.getMachineVoltageFromTier(4 + i));
+                                getMachineVoltageFromTier(4 + i));
                         GT_Values.RA.addAssemblerRecipe(
                                 new ItemStack[]{
                                         new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), ((j + 1) * 16), ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
-                                        WerkstoffLoader.CubicZirconia.get(OrePrefixes.lens),
+                                        CubicZirconia.get(OrePrefixes.lens),
                                         GT_OreDictUnificator.get(prefixes[j], cables[i + 4], 8),
                                         emitters[i].get(2 * (j + 1)),
                                         ItemList.HATCHES_DYNAMO[4 + i].get(2 * (j + 1)),
@@ -924,13 +925,13 @@ public class RecipeLoader {
                                 Materials.SolderingAlloy.getMolten(144 * i * (j + 1)),
                                 eDynamo,
                                 200 * (j + 1),
-                                BW_Util.getMachineVoltageFromTier(4 + i));
+                                getMachineVoltageFromTier(4 + i));
                     }
                 }
             }
 
-            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Input_HV.get(64), Materials.LiquidAir.getCells(1), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.compressedHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));
-            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Output_HV.get(64), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.giantOutputHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));
+            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Input_HV.get(64), Materials.LiquidAir.getCells(1), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.compressedHatch.copy()}, null, null, null, null, 300, getMachineVoltageFromTier(3), 0));
+            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Output_HV.get(64), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.giantOutputHatch.copy()}, null, null, null, null, 300, getMachineVoltageFromTier(3), 0));
 
             GT_Values.RA.addAssemblylineRecipe(
                     ItemList.Machine_LuV_CircuitAssembler.get(1L), 24000,
@@ -948,7 +949,7 @@ public class RecipeLoader {
                     },
                     ItemRegistry.cal.copy(),
                     24000,
-                    BW_Util.getMachineVoltageFromTier(6)
+                    getMachineVoltageFromTier(6)
             );
         }
     }

@@ -35,6 +35,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getByteFromRarity;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getRarityFromByte;
+
 public class BioCulture extends BioData implements IColorModulationContainer {
 
     public static final ArrayList<BioCulture> BIO_CULTURE_ARRAY_LIST = new ArrayList<>();
@@ -91,7 +94,7 @@ public class BioCulture extends BioData implements IColorModulationContainer {
         ret.setTag("Plasmid", BioData.getNBTTagFromBioData(BioData.convertBioPlasmidToBioData(bioCulture.plasmid)));
         ret.setTag("DNA", BioData.getNBTTagFromBioData(BioData.convertBioDNAToBioData(bioCulture.dDNA)));
         ret.setBoolean("Breedable", bioCulture.bBreedable);
-        ret.setByte("Rarety", BW_Util.getByteFromRarity(bioCulture.rarity));
+        ret.setByte("Rarety", getByteFromRarity(bioCulture.rarity));
         if (bioCulture.bBreedable)
             ret.setString("Fluid", bioCulture.getFluid().getName());
         return ret;
@@ -108,7 +111,7 @@ public class BioCulture extends BioData implements IColorModulationContainer {
                     tag.getString("Name"),
                     BioPlasmid.convertDataToPlasmid(getBioDataFromNBTTag(tag.getCompoundTag("Plasmid"))),
                     BioDNA.convertDataToDNA(getBioDataFromNBTTag(tag.getCompoundTag("DNA"))),
-                    BW_Util.getRarityFromByte(tag.getByte("Rarety")),
+                    getRarityFromByte(tag.getByte("Rarety")),
                     tag.getBoolean("Breedable")
             );
         if (ret.bBreedable)

@@ -23,9 +23,7 @@
 package com.github.bartimaeusnek.bartworks.common.tileentities.multis;
 
 import com.github.bartimaeusnek.bartworks.common.items.SimpleSubItemClass;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.MathUtils;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTech_API;
@@ -50,6 +48,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
+
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.Thorium232;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getMachineVoltageFromTier;
 
 public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
 
@@ -353,10 +354,10 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
             GT_Values.RA.addCentrifugeRecipe(
                     Materials.Thorium.getDust(1),GT_Values.NI,GT_Values.NF,GT_Values.NF,
                     Materials.Thorium.getDustSmall(2),Materials.Thorium.getDustSmall(1),
-                    WerkstoffLoader.Thorium232.get(OrePrefixes.dustTiny,1),WerkstoffLoader.Thorium232.get(OrePrefixes.dustTiny,1),
-                    WerkstoffLoader.Thorium232.get(OrePrefixes.dustTiny,1),Materials.Lutetium.getDustTiny(1),
+                    Thorium232.get(OrePrefixes.dustTiny,1),Thorium232.get(OrePrefixes.dustTiny,1),
+                    Thorium232.get(OrePrefixes.dustTiny,1),Materials.Lutetium.getDustTiny(1),
                     new int[]{1600,1500,200,200,50,50},
-                    10000, BW_Util.getMachineVoltageFromTier(4));
+                    10000, getMachineVoltageFromTier(4));
             GT_Values.RA.addAssemblerRecipe(new ItemStack[]{
                     GT_OreDictUnificator.get(OrePrefixes.plateDense,Materials.Lead,6),
                     GT_OreDictUnificator.get(OrePrefixes.frameGt,Materials.TungstenSteel,1)
@@ -364,9 +365,9 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
                     Materials.Concrete.getMolten(1296),
                     new ItemStack(GregTech_API.sBlockCasings3,1,12),
                     40,
-                    BW_Util.getMachineVoltageFromTier(5)
+                    getMachineVoltageFromTier(5)
             );
-            GT_Values.RA.addMixerRecipe(WerkstoffLoader.Thorium232.get(OrePrefixes.dust,10),Materials.Uranium235.getDust(1),GT_Utility.getIntegratedCircuit(1),null,null,null,new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials),400,30);
+            GT_Values.RA.addMixerRecipe(Thorium232.get(OrePrefixes.dust,10),Materials.Uranium235.getDust(1),GT_Utility.getIntegratedCircuit(1),null,null,null,new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials),400,30);
             GT_Values.RA.addFormingPressRecipe(new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials),Materials.Graphite.getDust(64),new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,1,4),40,30);
             ItemStack[] pellets = new ItemStack[6];
             Arrays.fill(pellets,new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,64,1));

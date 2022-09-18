@@ -24,7 +24,6 @@ package com.github.bartimaeusnek.bartworks.client.renderer;
 
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.BW_Meta_Items;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitImprintLoader;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.GT_Utility;
@@ -38,7 +37,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.*;
+
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.get2DCoordFrom1DArray;
 
 @SideOnly(Side.CLIENT)
 public class BW_GT_ItemRenderer implements IItemRenderer {
@@ -81,7 +82,7 @@ public class BW_GT_ItemRenderer implements IItemRenderer {
                 }
 
                 GL11.glColor3f(1.0F, 1.0F, 1.0F);
-                IIcon tIcon = (IIcon) BW_Util.get2DCoordFrom1DArray(aMetaData, 0, 2, aItem.mIconList);
+                IIcon tIcon = (IIcon) get2DCoordFrom1DArray(aMetaData, 0, 2, aItem.mIconList);
 
                 Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationItemsTexture);
                 GL11.glBlendFunc(770, 771);
@@ -104,7 +105,7 @@ public class BW_GT_ItemRenderer implements IItemRenderer {
 //                    ItemRenderer.renderItemIn2D(Tessellator.instance, tIcon.getMaxU(), tIcon.getMinV(), tIcon.getMinU(), tIcon.getMaxV(), tIcon.getIconWidth(), tIcon.getIconHeight(), 0.0625F);
                 }
 
-                IIcon tOverlay = (IIcon) BW_Util.get2DCoordFrom1DArray(aMetaData, 1, 2, aItem.mIconList);
+                IIcon tOverlay = (IIcon) get2DCoordFrom1DArray(aMetaData, 1, 2, aItem.mIconList);
                 GL11.glColor3f(1.0F, 1.0F, 1.0F);
                 if (tOverlay != null) {
                     Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationItemsTexture);

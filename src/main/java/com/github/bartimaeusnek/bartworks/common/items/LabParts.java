@@ -24,7 +24,6 @@ package com.github.bartimaeusnek.bartworks.common.items;
 
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.BioCulture;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -38,6 +37,7 @@ import net.minecraft.util.StatCollector;
 import java.util.List;
 
 import static com.github.bartimaeusnek.bartworks.common.loaders.BioItemList.*;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getRarityFromByte;
 
 public class LabParts extends SimpleSubItemClass {
 
@@ -54,10 +54,10 @@ public class LabParts extends SimpleSubItemClass {
 
         switch (itemStack.getItemDamage()) {
             case 0:
-                return BW_Util.getRarityFromByte(itemStack.getTagCompound().getCompoundTag("DNA").getByte("Rarity"));
+                return getRarityFromByte(itemStack.getTagCompound().getCompoundTag("DNA").getByte("Rarity"));
             case 1:
             case 2:
-                return BW_Util.getRarityFromByte(itemStack.getTagCompound().getByte("Rarity"));
+                return getRarityFromByte(itemStack.getTagCompound().getByte("Rarity"));
             default:
                 return EnumRarity.common;
         }

@@ -25,10 +25,10 @@ package com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement;
 import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.AfterLuVTierEnhacement;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
-import gregtech.api.enums.*;
+import gregtech.api.enums.ItemList;
+import gregtech.api.enums.Materials;
+import gregtech.api.enums.OrePrefixes;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.*;
 import gregtech.api.util.GT_Recipe.GT_Recipe_AssemblyLine;
@@ -47,6 +47,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.LuVTierMaterial;
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.Ruridit;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.*;
 import static gregtech.api.enums.OrePrefixes.*;
 
 @SuppressWarnings("ALL")
@@ -83,7 +86,7 @@ public class LuVTierEnhancer implements Runnable {
                         "PPP",
                         "PwP",
                         "PPP",
-                        'P', WerkstoffLoader.LuVTierMaterial.get(plate)
+                        'P', LuVTierMaterial.get(plate)
                 });
 
         replaceAllRecipes(LuVMachines,LuVMaterialsGenerated,bufferedRecipeList);
@@ -133,7 +136,7 @@ public class LuVTierEnhancer implements Runnable {
 
             Consumer recipeAction = obj -> LuVTierEnhancer.doStacksCointainAndReplace(((GT_Shaped_Recipe) obj).getInput(),
                     GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true,
-                    WerkstoffLoader.LuVTierMaterial.get(prefixes));
+                    LuVTierMaterial.get(prefixes));
 
             CraftingManager.getInstance().getRecipeList().stream().filter(recipeFilter).forEach(recipeAction);
             bufferedRecipeList.stream().filter(recipeFilter).forEach(recipeAction);
@@ -143,37 +146,37 @@ public class LuVTierEnhancer implements Runnable {
     private static void rewriteMachineRecipes(ItemStack stack, OrePrefixes[] LuVMaterialsGenerated, GT_Recipe recipe) {
         if (LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, stack, false)) {
             for (OrePrefixes prefixes : LuVMaterialsGenerated) {
-                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
-                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mOutputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mOutputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
             }
-            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, WerkstoffLoader.LuVTierMaterial.getMolten(1).getFluid());
-            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidOutputs, Materials.Chrome.getMolten(1), true, WerkstoffLoader.LuVTierMaterial.getMolten(1).getFluid());
+            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, LuVTierMaterial.getMolten(1).getFluid());
+            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidOutputs, Materials.Chrome.getMolten(1), true, LuVTierMaterial.getMolten(1).getFluid());
         }
         if (LuVTierEnhancer.doStacksCointainAndReplace(recipe.mOutputs, stack, false)) {
             for (OrePrefixes prefixes : LuVMaterialsGenerated) {
-                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
-                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mOutputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mOutputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
             }
-            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, WerkstoffLoader.LuVTierMaterial.getMolten(1).getFluid());
-            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidOutputs, Materials.Chrome.getMolten(1), true, WerkstoffLoader.LuVTierMaterial.getMolten(1).getFluid());
+            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, LuVTierMaterial.getMolten(1).getFluid());
+            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidOutputs, Materials.Chrome.getMolten(1), true, LuVTierMaterial.getMolten(1).getFluid());
         }
     }
     private static void rewriteAsslineRecipes(ItemStack stack, OrePrefixes[] LuVMaterialsGenerated, GT_Recipe.GT_Recipe_AssemblyLine recipe){
         for (OrePrefixes prefixes : LuVMaterialsGenerated) {
             if (LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, stack, false)) {
-                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
-                LuVTierEnhancer.doStacksCointainAndReplace(new Object[]{recipe.mOutput}, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(new Object[]{recipe.mOutput}, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
             }
             if (LuVTierEnhancer.doStacksCointainAndReplace(new Object[]{recipe.mOutput}, stack, false)) {
-                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
-                LuVTierEnhancer.doStacksCointainAndReplace(new Object[]{recipe.mOutput}, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, WerkstoffLoader.LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
+                LuVTierEnhancer.doStacksCointainAndReplace(new Object[]{recipe.mOutput}, GT_OreDictUnificator.get(prefixes, Materials.Chrome, 1), true, LuVTierMaterial.get(prefixes));
             }
         }
         if (LuVTierEnhancer.doStacksCointainAndReplace(recipe.mInputs, stack, false)) {
-            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, WerkstoffLoader.LuVTierMaterial.getMolten(1).getFluid());
+            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, LuVTierMaterial.getMolten(1).getFluid());
         }
         if (LuVTierEnhancer.doStacksCointainAndReplace(new Object[]{recipe.mOutput}, stack, false)) {
-            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, WerkstoffLoader.LuVTierMaterial.getMolten(1).getFluid());
+            LuVTierEnhancer.doStacksCointainAndReplace(recipe.mFluidInputs, Materials.Chrome.getMolten(1), true, LuVTierMaterial.getMolten(1).getFluid());
         }
     }
 
@@ -182,7 +185,7 @@ public class LuVTierEnhancer implements Runnable {
                 gt_recipe.mInputs = replaceArrayWith(
                         gt_recipe.mInputs,
                         Materials.Osmiridium,
-                        WerkstoffLoader.Ruridit
+                        Ruridit
                 );
 
         GT_Recipe.GT_Recipe_AssemblyLine.sAssemblylineRecipes.stream()
@@ -191,14 +194,14 @@ public class LuVTierEnhancer implements Runnable {
                         recipe_assemblyLine.mInputs = replaceArrayWith(
                                 recipe_assemblyLine.mInputs,
                                 Materials.Osmiridium,
-                                WerkstoffLoader.Ruridit
+                                Ruridit
                         )
                 );
 
         GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.mRecipeList.stream()
                 .filter(gt_recipe ->
-                        gt_recipe.mEUt < BW_Util.getTierVoltage(6) &&
-                                !BW_Util.checkStackAndPrefix(gt_recipe.mOutputs[0]) &&
+                        gt_recipe.mEUt < getTierVoltage(6) &&
+                                !checkStackAndPrefix(gt_recipe.mOutputs[0]) &&
                                 !isOutputBlackListed(gt_recipe.mOutputs[0])
                 )
                 .forEach(replace);
@@ -218,7 +221,7 @@ public class LuVTierEnhancer implements Runnable {
     private static ItemStack[] replaceArrayWith(ItemStack[] stackArray, Materials source, Werkstoff target) {
         for (int i = 0; i < stackArray.length; i++) {
             ItemStack stack = stackArray[i];
-            if (!BW_Util.checkStackAndPrefix(stack))
+            if (!checkStackAndPrefix(stack))
                 continue;
             stackArray[i] = replaceStackWith(stack, source, target);
         }
@@ -259,7 +262,7 @@ public class LuVTierEnhancer implements Runnable {
                         else {
                             int amount = ((ItemStack) ((ArrayList)stacks[i]).get(0)).stackSize;
                             stacks[i] = new ArrayList<>();
-                            ((ArrayList)stacks[i]).add(BW_Util.setStackSize(replacement[0], amount));
+                            ((ArrayList)stacks[i]).add(setStackSize(replacement[0], amount));
                             replaced = true;
                         }
 
@@ -270,7 +273,7 @@ public class LuVTierEnhancer implements Runnable {
                     return true;
                 else {
                     int amount = ((ItemStack) stacks[i]).stackSize;
-                    stacks[i] = BW_Util.setStackSize(replacement[0], amount);
+                    stacks[i] = setStackSize(replacement[0], amount);
                     replaced = true;
                 }
         }

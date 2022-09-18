@@ -24,14 +24,16 @@ package com.github.bartimaeusnek.crossmod.tectech;
 
 import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.technus.tectech.recipe.TT_recipeAdder;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GT_OreDictUnificator;
 import net.minecraftforge.fluids.FluidStack;
+
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.Krypton;
+import static com.github.bartimaeusnek.bartworks.system.material.BW_Materials.Oganesson;
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.getMachineVoltageFromTier;
 
 public class TecTechResearchLoader {
 
@@ -44,7 +46,7 @@ public class TecTechResearchLoader {
                     ItemRegistry.voidminer[0].copy(),
                     1024000,
                     256,
-                    BW_Util.getMachineVoltageFromTier(7),
+                    getMachineVoltageFromTier(7),
                     24,
                     new Object[]{
                             ItemRegistry.voidminer[0].copy(),
@@ -57,18 +59,18 @@ public class TecTechResearchLoader {
                     },
                     new FluidStack[]{
                             Materials.SolderingAlloy.getMolten(1440),
-                            WerkstoffLoader.Krypton.getFluidOrGas(20000)
+                            Krypton.getFluidOrGas(20000)
                     },
                     ItemRegistry.voidminer[1].copy(),
                     216000,
-                    BW_Util.getMachineVoltageFromTier(7)
+                    getMachineVoltageFromTier(7)
             );
 
             TT_recipeAdder.addResearchableAssemblylineRecipe(
                     ItemRegistry.voidminer[1].copy(),
                     8192000,
                     512,
-                    BW_Util.getMachineVoltageFromTier(8),
+                    getMachineVoltageFromTier(8),
                     64,
                     new Object[]{
                             ItemRegistry.voidminer[1].copy(),
@@ -81,11 +83,11 @@ public class TecTechResearchLoader {
                     },
                     new FluidStack[]{
                             Materials.SolderingAlloy.getMolten(1440),
-                            WerkstoffLoader.Oganesson.getFluidOrGas(20000)
+                            Oganesson.getFluidOrGas(20000)
                     },
                     ItemRegistry.voidminer[2].copy(),
                     432000,
-                    BW_Util.getMachineVoltageFromTier(8)
+                    getMachineVoltageFromTier(8)
             );
 
         }
@@ -94,7 +96,7 @@ public class TecTechResearchLoader {
                 ItemList.Machine_Multi_ImplosionCompressor.get(1L),
                 64000,
                 48,
-                BW_Util.getMachineVoltageFromTier(8),
+                getMachineVoltageFromTier(8),
                 8,
                 new Object[]{
                         ItemList.Machine_Multi_ImplosionCompressor.get(1L),
@@ -111,13 +113,13 @@ public class TecTechResearchLoader {
                 },
                 ItemRegistry.eic.copy(),
                 240000,
-                BW_Util.getMachineVoltageFromTier(8)
+                getMachineVoltageFromTier(8)
         );
 
 //        BartWorksCrossmod.LOGGER.info("Nerfing Assembly Lines >= LuV Recipes to run with TecTech!");
 //        HashSet<GT_Recipe.GT_Recipe_AssemblyLine> toRem = new HashSet<>();
 //        for (GT_Recipe.GT_Recipe_AssemblyLine recipe : GT_Recipe.GT_Recipe_AssemblyLine.sAssemblylineRecipes){
-//            if (recipe.mEUt >= BW_Util.getTierVoltage(6) && !GT_Utility.areStacksEqual(recipe.mResearchItem, CustomItemList.UnusedStuff.get(1L))){
+//            if (recipe.mEUt >= getTierVoltage(6) && !GT_Utility.areStacksEqual(recipe.mResearchItem, CustomItemList.UnusedStuff.get(1L))){
 //                String modId = GameRegistry.findUniqueIdentifierFor(recipe.mOutput.getItem()).modId;
 //                if (!modId.equalsIgnoreCase("tectech"))
 //                    if (!modId.equalsIgnoreCase("gregtech") || modId.equalsIgnoreCase("gregtech") && (recipe.mOutput.getItemDamage() < 15000 || recipe.mOutput.getItemDamage() > 16999))

@@ -37,7 +37,6 @@ import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.Circ
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitPartLoader;
 import com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement.PlatinumSludgeOverHaul;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
-import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.DownTierLoader;
 import com.github.bartimaeusnek.bartworks.system.oredict.OreDictHandler;
 import com.github.bartimaeusnek.bartworks.util.log.DebugLog;
@@ -134,9 +133,9 @@ public final class MainMod {
             }
         }
 
-        if (ConfigHandler.newStuff) {
-            WerkstoffLoader.setUp();
-        }
+//        if (ConfigHandler.newStuff) {
+//            WerkstoffLoader.setUp();
+//        }
 
         if (ConfigHandler.hardmode)
             MainMod.LOGGER.info(". . . ACTIVATED HARDMODE.");
@@ -165,9 +164,9 @@ public final class MainMod {
         FMLCommonHandler.instance().bus().register(serverEventHandler);
         if (ConfigHandler.BioLab)
             BioLabLoader.run();
-        if (ConfigHandler.newStuff) {
-            WerkstoffLoader.runInit();
-        }
+//        if (ConfigHandler.newStuff) {
+//            WerkstoffLoader.runInit();
+//        }
         ItemRegistry.run();
         RecipeLoader.run();
     }
@@ -184,7 +183,7 @@ public final class MainMod {
 
         BioObjectAdder.regenerateBioFluids();
         if (ConfigHandler.newStuff) {
-            WerkstoffLoader.run();
+//            WerkstoffLoader.run();
             LocalisationLoader.localiseAll();
         }
     }

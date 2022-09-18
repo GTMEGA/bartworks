@@ -25,7 +25,6 @@ package com.github.bartimaeusnek.bartworks.server.container;
 import com.github.bartimaeusnek.bartworks.API.BioVatLogicAdder;
 import com.github.bartimaeusnek.bartworks.API.IRadMaterial;
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.GT_MetaTileEntity_RadioHatch;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.OrePrefixes;
@@ -43,7 +42,8 @@ import net.minecraft.item.ItemStack;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
-import java.util.Optional;
+
+import static com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util.checkStackAndPrefix;
 
 public class GT_Container_RadioHatch extends GT_Container_1by1 {
 
@@ -183,7 +183,7 @@ public class GT_Container_RadioHatch extends GT_Container_1by1 {
                     ))
                 return true;
 
-            if (!BW_Util.checkStackAndPrefix(p_75214_1_))
+            if (!checkStackAndPrefix(p_75214_1_))
                 return false;
 
             ItemData ass = GT_OreDictUnificator.getAssociation(p_75214_1_);

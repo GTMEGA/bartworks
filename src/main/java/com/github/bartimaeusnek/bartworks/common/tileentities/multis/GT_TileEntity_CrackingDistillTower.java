@@ -22,8 +22,8 @@
 
 package com.github.bartimaeusnek.bartworks.common.tileentities.multis;
 
-import com.github.bartimaeusnek.bartworks.util.BWRecipes;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
+import com.github.bartimaeusnek.bartworks.util.BWBasicRecipes.DynamicGTRecipe;
+import com.github.bartimaeusnek.bartworks.util.BW_Werkstoff_Util;
 import com.github.bartimaeusnek.bartworks.util.MathUtils;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Input;
 import gregtech.api.util.GT_Recipe;
@@ -71,11 +71,11 @@ public class GT_TileEntity_CrackingDistillTower extends GT_MetaTileEntity_Distil
                 nuoutputs[i] = recipeDistill.mFluidOutputs[i];
                 nuoutputs[i].amount = MathUtils.floorInt(recipeDistill.mFluidOutputs[i].amount * ratio);
             }
-            BWRecipes.DynamicGTRecipe combined = new BWRecipes.DynamicGTRecipe(true, null, recipeDistill.mOutputs, null, recipeDistill.mChances, recipeCracking.mFluidInputs, nuoutputs, (MathUtils.floorInt(recipeDistill.mDuration * ratio)) + recipeCracking.mDuration, Math.max((MathUtils.floorInt(recipeDistill.mEUt * ratio)), recipeCracking.mEUt), 0);
+            DynamicGTRecipe combined = new DynamicGTRecipe(true, null, recipeDistill.mOutputs, null, recipeDistill.mChances, recipeCracking.mFluidInputs, nuoutputs, (MathUtils.floorInt(recipeDistill.mDuration * ratio)) + recipeCracking.mDuration, Math.max((MathUtils.floorInt(recipeDistill.mEUt * ratio)), recipeCracking.mEUt), 0);
             if (combined.isRecipeInputEqual(true, array)) {
                 this.mEfficiency = (10000 - (this.getIdealStatus() - this.getRepairStatus()) * 1000);
                 this.mEfficiencyIncrease = 10000;
-                BW_Util.calculateOverclockedNessMulti(combined.mEUt, combined.mDuration, 1, this.getMaxInputVoltage(), this);
+                BW_Werkstoff_Util.calculateOverclockedNessMulti(combined.mEUt, combined.mDuration, 1, this.getMaxInputVoltage(), this);
                 if (this.mMaxProgresstime == Integer.MAX_VALUE - 1 && this.mEUt == Integer.MAX_VALUE - 1)
                     return false;
                 if (this.mEUt > 0) {
