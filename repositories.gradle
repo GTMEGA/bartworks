@@ -1,6 +1,11 @@
 // Add any additional repositories for your dependencies here
 
 repositories {
+    mavenLocal()
+    maven {
+        name = "GTNH Maven"
+        url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
+    }
     maven {
         name "OpenComputers Repo"
         url = "http://maven.cil.li/"
@@ -18,9 +23,23 @@ repositories {
         }
     }
     maven {
-        url "https://cursemaven.com"
+        name = "ic2"
+        url = "http://maven2.ic2.player.to/"
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
     }
     maven {
-        url = "https://jitpack.io"
+        name = "cursemaven"
+        url = "https://mvn.falsepattern.com/cursemaven/"
+    }
+    maven {
+        name = "jitpack"
+        url = "https://mvn.falsepattern.com/jitpack/"
+    }
+    maven {
+        name = "FalsePattern GTMEGA Maven"
+        url = "https://gtmega.falsepattern.com/releases/"
     }
 }
