@@ -147,7 +147,7 @@ public final class MainMod {
 
         if (ConfigHandler.newStuff) {
             Werkstoff.init();
-            GregTech_API.sAfterGTPostload.add(new CircuitPartLoader());
+            //GregTech_API.sAfterGTPostload.add(new CircuitPartLoader());
             if (SideReference.Side.Client)
                 GregTech_API.sBeforeGTLoad.add(new PrefixTextureLinker());
         }
@@ -213,7 +213,7 @@ public final class MainMod {
 
     public static void runOnPlayerJoined(boolean classicMode, boolean disableExtraGasRecipes) {
         OreDictHandler.adaptCacheForWorld();
-        CircuitImprintLoader.run();
+        //CircuitImprintLoader.run();
         BioVatLogicAdder.RadioHatch.runBasicItemIntegration();
         if (!recipesAdded) {
             if (!disableExtraGasRecipes)

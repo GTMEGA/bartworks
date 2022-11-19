@@ -3,11 +3,14 @@
 dependencies {
     compile("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
     compile("com.github.GTMEGA:StructureLib:0237ab2549:deobf")
-    compile("gtmega:gt5u-mc1.7.10:5.28.23-gtmega:dev") {
+    compile("gtmega:gt5u-mc1.7.10:5.28.25-gtmega:dev") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:GalacticGregGT5:master-SNAPSHOT:dev")
-    compile("com.github.GTNewHorizons:TinkersConstruct:1.9.0-17-GTNH:dev")
+    compile("com.github.GTNewHorizons:Mantle:0.3.4:dev")
+    compile("com.github.GTNewHorizons:TinkersConstruct:1.9.7-GTNH:dev"){
+        transitive = false
+    }
 
     compile files("dependencies/TecTech-1.7.10-4.10.4-local-b6491dd.jar")
 

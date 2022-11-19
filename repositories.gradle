@@ -4,7 +4,7 @@ repositories {
     mavenLocal()
     maven {
         name = "GTNH Maven"
-        url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
+        url = "https://mvn.falsepattern.com/usrv/"
     }
     maven {
         name "OpenComputers Repo"
@@ -31,15 +31,15 @@ repositories {
         }
     }
     maven {
-        name = "cursemaven"
-        url = "https://mvn.falsepattern.com/cursemaven/"
+        name = "FalsePattern GTMEGA Maven"
+        url = "https://mvn.falsepattern.com/gtmega_releases/"
+    }
+    maven {
+        name = "mavenpattern"
+        url = "https://mvn.falsepattern.com/releases"
     }
     maven {
         name = "jitpack"
         url = "https://mvn.falsepattern.com/jitpack/"
-    }
-    maven {
-        name = "FalsePattern GTMEGA Maven"
-        url = "https://gtmega.falsepattern.com/releases/"
     }
 }
